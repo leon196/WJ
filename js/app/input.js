@@ -22,7 +22,32 @@ define( ["three", "container"], function ( THREE, container )
 		mouse:
 		{
 			position: vec2(0, 0),
-			down: false
+			ratio: vec2(0, 0),
+			lastRatio: vec2(0, 0),
+			pressed: false,
+			dragging: false,
+			update: function (x, y)
+			{
+				input.mouse.position = vec2(x, y);
+
+				var ratio = vec2(x / window.innerWidth, y / window.innerHeight);
+
+				if (input.mouse.pressed && input.mouse.dragging)
+				{
+					input.mouse.ratio.x += ratio.x - input.mouse.lastRatio.x;
+					input.mouse.ratio.y += ratio.y - input.mouse.lastRatio.y;
+				}
+
+				input.mouse.lastRatio = vec2(ratio.x, ratio.y);
+			},
+			down: function ()
+			{
+				input.mouse.pressed = true;
+			},
+			up: function ()
+			{
+				input.mouse.pressed = false;
+			}
 		},
 
 		keyboard:
@@ -45,20 +70,17 @@ define( ["three", "container"], function ( THREE, container )
 
 		mousedown: function ( event ) 
 		{
-			input.mouse.down = true;
+			input.mouse.down();
 		},
 
 		mousemove: function ( event ) 
 		{
-			event.preventDefault();
-			event.stopPropagation();
-
-			input.mouse.position = vec2(event.clientX, event.clientY);
+			input.mouse.update(event.clientX, event.clientY);
 		},
 
 		mouseup: function ( event ) 
 		{
-			input.mouse.down = false;
+			input.mouse.up();
 		},
 
 		keydown: function (event)

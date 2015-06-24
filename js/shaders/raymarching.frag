@@ -6,6 +6,7 @@
 varying vec2 vUv;
 uniform vec2 bufferSize;
 uniform vec2 screenSize;
+uniform vec2 mouse;
 uniform sampler2D picture;
 uniform sampler2D video;
 uniform sampler2D fbo;
@@ -13,11 +14,11 @@ uniform sampler2D fbo;
 // Raymarching
 const float rayEpsilon = 0.001;
 const float rayMin = 0.1;
-const float rayMax = 4.0;
-const int rayCount = 16;
+const float rayMax = 1000.0;
+const int rayCount = 32;
 
 // Camera
-vec3 eye = vec3(0, 0, -2.0);
+vec3 eye = vec3(1.0, 1.0, -10.0);
 vec3 front = vec3(0, 0, 1);
 vec3 right = vec3(1, 0, 0);
 vec3 up = vec3(0, 1, 0);
@@ -25,7 +26,7 @@ vec3 up = vec3(0, 1, 0);
 // Animation
 vec2 uvScale1 = vec2(2.0);
 vec2 uvScale2 = vec2(2.0);
-float terrainHeight = 0.6;
+float terrainHeight = 0.9;
 float sphereRadius = 0.9;
 float translationSpeed = 0.4;
 float rotationSpeed = 0.1;
@@ -37,7 +38,7 @@ vec3 shadowColor = vec3(0.1, 0, 0);
 void main()
 {
     // Ray from UV
-    vec2 uv = videoUV(vUv).xy * 2.0 - 1.0;
+    vec2 uv = vUv.xy * 2.0 - 1.0;
     uv.x *= screenSize.x / screenSize.y;
     vec3 ray = normalize(front + right * uv.x + up * uv.y);
     
@@ -54,10 +55,17 @@ void main()
         // Ray Position
         vec3 p = eye + ray * t;
         vec3 originP = p;
+
+        float sphereCamera = sphere(p - eye, 1.0);
+        
+        p = rotateX(p, PI2 * mouse.y);
+        p = rotateY(p, PI2 * mouse.x);
+
+        p = mod(p, vec3(4.0)) - 2.0;
         
         // Transformations
-        p = rotateY(p, PI / 2.0);
-        p = rotateX(p, PI / 2.0);
+        p = rotateY(p, PIHalf);
+        p = rotateX(p, PIHalf);
         vec2 translate = vec2(0.0, translationTime);
         
         // Sphere UV
@@ -84,12 +92,12 @@ void main()
         //texture = mix(texture, texture2, 1.0 - step(texture.g - texture.r - texture.b, -0.3));
         luminance = (texture.r + texture.g + texture.b) / 3.0;
         // luminance = sin(luminance / 0.6355);
-        
+
         // Displacement
         p -= normalize(p) * terrainHeight * luminance * reflectance(originP, eye);
         
         // Distance to Sphere
-        float d = sphere(p, sphereRadius);
+        float d = substraction(sphereCamera, sphere(p, sphereRadius));
         
         // Distance min or max reached
         if (d < rayEpsilon || t > rayMax)

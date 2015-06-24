@@ -15,6 +15,7 @@ define( [
     // uColor: { type: "c", value: new THREE.Color( "#ff0000" ) }
     bufferSize : { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
     screenSize : { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
+    mouse : { type: "v2", value: new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2 ) },
     picture: { type: "t", value: texture },
     video: { type: "t", value: video.texture },
     fbo: { type: "t", value: video.texture }

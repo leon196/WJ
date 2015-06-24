@@ -1,6 +1,7 @@
 
 #define PI 3.141592653589
 #define PI2 6.283185307179
+#define PIHalf 1.570796327
 #define RADTier 2.094395102
 #define RAD2Tier 4.188790205
 
@@ -34,6 +35,11 @@ vec2 wrapUV (vec2 uv)
 	return mod(abs(uv), 1.0);
 }
 
+vec2 kaelidoGrid(vec2 p) 
+{ 
+	return vec2(step(mod(p, 2.0), vec2(1.0))); 
+}
+
 vec2 mouseFromCenter (vec2 mouse, vec2 resolution)
 {
 	mouse /= resolution;
@@ -45,6 +51,11 @@ vec2 mouseFromCenter (vec2 mouse, vec2 resolution)
 float luminance ( vec3 color ) 
 { 
 	return (color.r + color.g + color.b) / 3.0; 
+}
+
+float reflectance(vec3 a, vec3 b) 
+{ 
+	return dot(normalize(a), normalize(b)) * 0.5 + 0.5; 
 }
 
 vec3 rotateY(vec3 v, float t)
@@ -63,12 +74,17 @@ float sphere( vec3 p, float s )
 	return length(p)-s; 
 }
 
-float reflectance(vec3 a, vec3 b) 
-{ 
-	return dot(normalize(a), normalize(b)) * 0.5 + 0.5; 
+float addition( float d1, float d2 )
+{
+    return min(d1,d2);
 }
 
-vec2 kaelidoGrid(vec2 p) 
-{ 
-	return vec2(step(mod(p, 2.0), vec2(1.0))); 
+float substraction( float d1, float d2 )
+{
+    return max(-d1,d2);
+}
+
+float intersection( float d1, float d2 )
+{
+    return max(d1,d2);
 }
