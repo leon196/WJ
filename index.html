@@ -2,23 +2,26 @@
 <html>
     <head>
         <title>amd-three.js</title>
+    </head>
+    <body>
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset='utf-8' />
+        <title>GlitchTV</title>
         <link href="css/style.css" rel="stylesheet">
+        <link rel='stylesheet' type='text/css' href='font/bebasneue-bold0.css'>
         <script src="js/config.js"></script>
+        <script src="js/utils.js"></script>
         <script data-main="../main" src="js/require.js"></script>
     </head>
     <body>
-        <div id="container">
-            <h1>amd-three.js</h1>
-            <p>Example of how to structure a three.js project with AMD, using Require.js. See <a href="https://github.com/felixpalmer/amd-three.js">github.com/felixpalmer/amd-three.js</a> for source and details</p>
-            <a href="https://github.com/felixpalmer/amd-three.js">
-                <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
-            </a>
-            <div>
-                <div id="example-container">
-                    <!-- Canvas to render on -->
-                    <div id="threejs-container">Generating world...</div>
-                </div>
-            </div>
-        </div>
+        <div id="threejs-container"></div>
+
+        <video id="video" muted autoplay loop style="display:none">
+            <source src="video/FFF.mp4" type='video/mp4;'>
+            <source src="video/vh1.ogv" type='video/ogg;'>
+        </video>
+
     </body>
 </html>

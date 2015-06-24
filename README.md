@@ -1,5 +1,6 @@
 # WJ
-Tool for VJing in WebGL
+
+Tool for VJing in WebGL with Three.js
 
 # amd-three.js 
 
