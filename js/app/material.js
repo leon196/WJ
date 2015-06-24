@@ -1,7 +1,14 @@
-define( ["three", "shader!simple.vert", "shader!simple.frag", "texture", "video"], function ( THREE, simpleVert, simpleFrag, texture, video ) {
+define( [
+  "three", 
+  "shader!simple.vert", 
+  "shader!planet.frag", 
+  "texture", 
+  "video"], 
+  function ( THREE, simpleVert, planetFrag, texture, video ) 
+  {
   // Shader objects support redefining of #defines.
   // See `simple.frag` file, where `faceColor` is already defined to be white, and we are overriding it to red here
-  simpleFrag.define( "faceColor", "vec3(1.0, 0, 0)" );
+  // simpleFrag.define( "faceColor", "vec3(1.0, 0, 0)" );
   return {
     bump: new THREE.MeshPhongMaterial( { bumpMap: video.texture } ),
     grass: new THREE.MeshBasicMaterial( { map: video.texture } ),
@@ -15,7 +22,7 @@ define( ["three", "shader!simple.vert", "shader!simple.frag", "texture", "video"
         fbo: { type: "t", value: video.texture }
       },
       vertexShader: simpleVert.value,
-      fragmentShader: simpleFrag.value,
+      fragmentShader: planetFrag.value,
       side: THREE.DoubleSide
     }),
     solid: new THREE.MeshLambertMaterial( {
