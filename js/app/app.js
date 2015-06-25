@@ -20,7 +20,7 @@ define( ["three", "container", "camera", "controls", "geometry", "light", "mater
         // quad.position.z = -1;
         scene.add( quad );
         
-        camera.position.z = 700;
+        camera.position.z = 500;
 
         controls.enabled = false;
         input.mouse.dragging = true;

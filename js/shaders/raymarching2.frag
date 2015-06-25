@@ -15,10 +15,10 @@ uniform sampler2D video;
 uniform sampler2D fbo;
 
 // Raymarching
-const float rayEpsilon = 0.0000001;
+const float rayEpsilon = 0.01;
 const float rayMin = 0.1;
 const float rayMax = 10.0;
-const int rayCount = 32;
+const int rayCount = 8;
 
 // Camera
 vec3 eye = vec3(0.01, 0.01, -1.5);
@@ -31,7 +31,7 @@ vec2 uvScale1 = vec2(1.0);
 vec2 uvScale2 = vec2(0.5);
 float terrainHeight = 0.1;
 float sphereRadius = 0.9;
-float translationSpeed = 0.01;
+float translationSpeed = 0.001;
 float rotationSpeed = 0.1;
 
 // Colors
@@ -41,7 +41,7 @@ vec3 shadowColor = vec3(0, 0, 0);
 void main()
 {
     // Ray from UV
-    vec2 uv = vUv.xy * 2.0 - 1.0;
+    vec2 uv = gl_FragCoord.xy / screenSize.xy * 2.0 - 1.0;
     uv.x *= screenSize.x / screenSize.y;
     float fov = 1.0 + 1.0 * mouseWheel;
     vec3 ray = normalize(front * fov + right * uv.x + up * uv.y);
@@ -86,21 +86,21 @@ void main()
         vec2 uv2 = mod(mix(sphereP2, 1.0 - sphereP2, kaelidoGrid(sphereP2)), 1.0);
         
         // Texture color
-        vec2 sphereP1 = vec2(mod(angleXY / PI + 1.0, 1.0), 1.0 - reflectance(p, eye));
+        vec2 sphereP1 = vec2(1.0 - mod(angleXY / PI + 1.0, 1.0), 1.0 - reflectance(p, eye));
         vec3 texture = texture2D(picture1, abs(sphereP1)).rgb;
         color = texture;
 
         // Texture Merge
-        vec3 texture2 = vec3(noise(vec3(0.0,0.0,time) + texture2D(picture1, uv2).rgb));
+        vec3 texture2 = vec3(noise(vec3(time*0.01,time*0.1,time) + texture2D(picture1, uv2).rgb));
         float water = texture.b - texture.g - texture.r;
-        texture = mix(texture, texture2, clamp(water + 0.3, 0.0, 1.0));
+        texture = mix(texture, texture2, clamp(water + 0.7, 0.0, 1.0));
         
         // Height from luminance
         float height = (texture.r + texture.g + texture.b) / 3.0;
         // heigh = mix(height, noise(texture2));
 
         // Displacement
-        p -= normalize(p) * terrainHeight * height * reflectance(p, eye);
+        p -= normalize(p) * terrainHeight * height;// * reflectance(p, eye);
         
         // Distance to Sphere
         float d = substraction(sphereCamera, sphere(p, sphereRadius));

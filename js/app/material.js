@@ -5,8 +5,9 @@ define( [
   "shader!raymarching.frag", 
   "shader!raymarching2.frag", 
   "texture", 
-  "video"], 
-  function ( THREE, simpleVert, planetFrag, raymarchingFrag, raymarching2Frag, texture, video ) 
+  "video",
+  "renderer"], 
+  function ( THREE, simpleVert, planetFrag, raymarchingFrag, raymarching2Frag, texture, video, renderer ) 
   {
   // Shader objects support redefining of #defines.
   // See `simple.frag` file, where `faceColor` is already defined to be white, and we are overriding it to red here
@@ -14,9 +15,9 @@ define( [
 
   var commonUniforms = {
     // uColor: { type: "c", value: new THREE.Color( "#ff0000" ) }
-    bufferSize : { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
-    screenSize : { type: "v2", value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
-    mouse : { type: "v2", value: new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2 ) },
+    bufferSize : { type: "v2", value: new THREE.Vector2( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() ) },
+    screenSize : { type: "v2", value: new THREE.Vector2( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() ) },
+    mouse : { type: "v2", value: new THREE.Vector2( 0, 0 ) },
     picture1: { type: "t", value: texture.earth },
     picture2: { type: "t", value: texture.texture2 },
     video: { type: "t", value: video.texture },

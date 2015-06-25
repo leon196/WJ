@@ -37,7 +37,7 @@ vec3 shadowColor = vec3(0.1, 0, 0);
 void main()
 {
     // Ray from UV
-    vec2 uv = vUv.xy * 2.0 - 1.0;
+    vec2 uv = gl_FragCoord.xy / screenSize.xy * 2.0 - 1.0;
     uv.x *= screenSize.x / screenSize.y;
     vec3 ray = normalize(front + right * uv.x + up * uv.y);
     
