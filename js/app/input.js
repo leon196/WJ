@@ -31,7 +31,7 @@ define( ["three", "container"], function ( THREE, container )
 			{
 				input.mouse.position = vec2(x, y);
 
-				var ratio = vec2(x / window.innerWidth, y / window.innerHeight);
+				var ratio = vec2(x / container.offsetWidth, y / container.offsetHeight);
 
 				if (input.mouse.pressed && input.mouse.dragging)
 				{

@@ -1,5 +1,5 @@
-define( ["three", "container", "camera", "controls", "geometry", "light", "material", "renderer", "scene", "video", "time", "input", "gui"],
-  function ( THREE, container, camera, controls, geometry, light, material, renderer, scene, video, time, input, gui ) 
+define( ["three", "container", "screen", "camera", "controls", "geometry", "light", "material", "renderer", "scene", "video", "time", "input", "gui"],
+  function ( THREE, container, screen, camera, controls, geometry, light, material, renderer, scene, video, time, input, gui ) 
   {
     var app = 
     {
@@ -15,12 +15,11 @@ define( ["three", "container", "camera", "controls", "geometry", "light", "mater
 
       init: function () 
       {
-        var plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
+        var plane = new THREE.PlaneBufferGeometry( screen.getWidth(), screen.getHeight() );
         quad = new THREE.Mesh( plane, app.materials[app.currentMaterial] );
-        // quad.position.z = -1;
         scene.add( quad );
         
-        camera.position.z = 500;
+        camera.position.z = 100;
 
         controls.enabled = false;
         input.mouse.dragging = true;
@@ -30,7 +29,6 @@ define( ["three", "container", "camera", "controls", "geometry", "light", "mater
       {
         window.requestAnimationFrame( app.animate );
 
-        // Trackball Controls
         controls.update();
 
         if (input.keyboard.left.fired)
@@ -46,7 +44,10 @@ define( ["three", "container", "camera", "controls", "geometry", "light", "mater
           quad.material = app.materials[app.currentMaterial];
         }
 
-        app.materials[app.currentMaterial].uniforms.mouse.value = new THREE.Vector2(input.mouse.ratio.x, input.mouse.ratio.y);
+        app.materials[app.currentMaterial].uniforms.screenSize.value.x = screen.getWidth();
+        app.materials[app.currentMaterial].uniforms.screenSize.value.y = screen.getHeight();
+        app.materials[app.currentMaterial].uniforms.mouse.value.x = input.mouse.ratio.x;
+        app.materials[app.currentMaterial].uniforms.mouse.value.y = input.mouse.ratio.y;
         app.materials[app.currentMaterial].uniforms.time.value = time.now();
         app.materials[app.currentMaterial].uniforms.mouseWheel.value = input.mouse.wheel;
 
