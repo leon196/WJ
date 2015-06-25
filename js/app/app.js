@@ -6,6 +6,7 @@ define( ["three", "container", "camera", "controls", "geometry", "light", "mater
 
       materials: 
       [
+        material.shaderRaymarching2,
         material.shaderRaymarching,
         material.shaderPlanet
       ],
@@ -46,6 +47,9 @@ define( ["three", "container", "camera", "controls", "geometry", "light", "mater
         }
 
         app.materials[app.currentMaterial].uniforms.mouse.value = new THREE.Vector2(input.mouse.ratio.x, input.mouse.ratio.y);
+        app.materials[app.currentMaterial].uniforms.time.value = time.now();
+        app.materials[app.currentMaterial].uniforms.mouseWheel.value = input.mouse.wheel;
+
 
         renderer.render( scene, camera );
       }

@@ -2,7 +2,7 @@ define( ["three", "container"], function ( THREE, container ) {
 
   container.innerHTML = "";
   var renderer = new THREE.WebGLRenderer( { clearColor: 0x000000 } );
-  renderer.setPixelRatio(0.5);
+  // renderer.setPixelRatio(0.5);
   renderer.sortObjects = false;
   renderer.autoClear = false;
   container.appendChild( renderer.domElement );

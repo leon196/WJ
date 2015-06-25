@@ -23,6 +23,7 @@ define( ["three", "container"], function ( THREE, container )
 		{
 			position: vec2(0, 0),
 			ratio: vec2(0, 0),
+			wheel: 0,
 			lastRatio: vec2(0, 0),
 			pressed: false,
 			dragging: false,
@@ -64,6 +65,9 @@ define( ["three", "container"], function ( THREE, container )
 			container.addEventListener( 'mousedown', input.mousedown, false );
 			container.addEventListener( 'mousemove', input.mousemove, false );
 			container.addEventListener( 'mouseup', input.mouseup, false );
+			container.addEventListener( 'mousewheel', input.mousewheel, false );
+			container.addEventListener( 'DOMMouseScroll', input.mousewheel, false ); // firefox
+
 			window.addEventListener( 'keydown', input.keydown, false);
 			window.addEventListener( 'keyup', input.keyup, false);
 		},
@@ -81,6 +85,18 @@ define( ["three", "container"], function ( THREE, container )
 		mouseup: function ( event ) 
 		{
 			input.mouse.up();
+		},
+
+		mousewheel: function ( event )
+		{
+			var delta = 0;
+			if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
+				delta = event.wheelDelta / 40;
+			} else if ( event.detail ) { // Firefox
+				delta = - event.detail / 3;
+			}
+
+			input.mouse.wheel += delta * 0.01;
 		},
 
 		keydown: function (event)
