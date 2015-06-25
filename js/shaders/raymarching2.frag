@@ -13,12 +13,14 @@ uniform sampler2D picture1;
 uniform sampler2D picture2;
 uniform sampler2D video;
 uniform sampler2D fbo;
+uniform float terrainHeight;
+uniform float sphereRadius;
 
 // Raymarching
-const float rayEpsilon = 0.01;
+const float rayEpsilon = 0.0001;
 const float rayMin = 0.1;
-const float rayMax = 10.0;
-const int rayCount = 8;
+const float rayMax = 1000.0;
+const int rayCount = 64;
 
 // Camera
 vec3 eye = vec3(0.01, 0.01, -1.5);
@@ -29,8 +31,6 @@ vec3 up = vec3(0, 1, 0);
 // Animation
 vec2 uvScale1 = vec2(1.0);
 vec2 uvScale2 = vec2(0.5);
-float terrainHeight = 0.1;
-float sphereRadius = 0.9;
 float translationSpeed = 0.001;
 float rotationSpeed = 0.1;
 
@@ -65,7 +65,7 @@ void main()
         p = rotateX(p, PI2 * mouse.y);
         p = rotateY(p, PI2 * mouse.x);
 
-        //p = mod(p, vec3(4.0)) - 2.0;
+        // p = mod(p, vec3(4.0)) - 2.0;
         
         // Transformations
         p = rotateY(p, PIHalf);
@@ -91,9 +91,10 @@ void main()
         color = texture;
 
         // Texture Merge
-        vec3 texture2 = vec3(noise(vec3(time*0.01,time*0.1,time) + texture2D(picture1, uv2).rgb));
-        float water = texture.b - texture.g - texture.r;
-        texture = mix(texture, texture2, clamp(water + 0.7, 0.0, 1.0));
+        // vec3 texture2 = vec3(noise(vec3(time*0.01,time*0.1,time) + texture2D(picture1, uv2).rgb));
+        // float water = texture.b - texture.g - texture.r;
+        // texture = mix(texture, texture2, clamp(water + 0.7, 0.0, 1.0));
+        // float height = texture2D(picture1, abs(sphereP1)).r;
         
         // Height from luminance
         float height = (texture.r + texture.g + texture.b) / 3.0;

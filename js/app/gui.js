@@ -1,5 +1,5 @@
 
-define( ["three", "container", "controls", "input"], function ( THREE, container, controls, input ) {
+define( ["three", "container", "renderer", "controls", "input"], function ( THREE, container, renderer, controls, input ) {
 
   var gui = 
   {
@@ -7,8 +7,9 @@ define( ["three", "container", "controls", "input"], function ( THREE, container
 
     options:  
     {
-      message: 'dat.gui',
-      speed: 0.8,
+      resolution: 2,
+      terrainHeight: 0.1,
+      sphereRadius: 0.9,
       explode: function() { }
       // Define render logic ...
     },
@@ -16,9 +17,15 @@ define( ["three", "container", "controls", "input"], function ( THREE, container
     init: function ()
     {
       // gui.dat.add(gui.options, 'message');
-      // gui.dat.add(gui.options, 'speed', -5, 5);
-      gui.dat.add(controls, 'enabled').name('Trackball Controls').listen();
-      gui.dat.add(input.mouse, 'dragging').name('Mouse Dragging').listen();
+      gui.dat.add(gui.options, 'resolution', 1, 4).name('Pixel size').step(1).onChange(function(value)
+      {
+        renderer.setPixelRatio(1 / value);
+        renderer.setSize( container.offsetWidth, container.offsetHeight );
+      });
+      gui.dat.add(gui.options, 'terrainHeight', 0, 0.5).name('Height Scale');
+      gui.dat.add(gui.options, 'sphereRadius', 0.1, 1).name('Planet Raduis');
+      // gui.dat.add(controls, 'enabled').name('Trackball controls').listen();
+      // gui.dat.add(input.mouse, 'dragging').name('Mouse dragging').listen();
       // gui.dat.add(gui.options, 'explode');
     },
 

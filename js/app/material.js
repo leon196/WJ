@@ -24,6 +24,8 @@ define( [
     video: { type: "t", value: video.texture },
     fbo: { type: "t", value: video.texture },
     mouseWheel: { type: "f", value: 0 },
+    terrainHeight: { type: "f", value: 0.1 },
+    sphereRadius: { type: "f", value: 0.9 },
     time: { type: "f", value: 0 }
   };
 

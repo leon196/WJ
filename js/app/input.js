@@ -27,16 +27,25 @@ define( ["three", "container"], function ( THREE, container )
 			lastRatio: vec2(0, 0),
 			pressed: false,
 			dragging: false,
+			button: 0,
 			update: function (x, y)
 			{
 				input.mouse.position = vec2(x, y);
 
 				var ratio = vec2(x / container.offsetWidth, y / container.offsetHeight);
 
+
 				if (input.mouse.pressed && input.mouse.dragging)
 				{
-					input.mouse.ratio.x += ratio.x - input.mouse.lastRatio.x;
-					input.mouse.ratio.y += ratio.y - input.mouse.lastRatio.y;
+					if (input.mouse.button == 0)
+					{
+						input.mouse.ratio.x += ratio.x - input.mouse.lastRatio.x;
+						input.mouse.ratio.y += ratio.y - input.mouse.lastRatio.y;
+					}
+					else if (input.mouse.button == 1)
+					{
+						input.mouse.wheel += ratio.y - input.mouse.lastRatio.y;
+					}
 				}
 
 				input.mouse.lastRatio = vec2(ratio.x, ratio.y);
@@ -44,6 +53,7 @@ define( ["three", "container"], function ( THREE, container )
 			down: function ()
 			{
 				input.mouse.pressed = true;
+				input.mouse.button = event.button;
 			},
 			up: function ()
 			{

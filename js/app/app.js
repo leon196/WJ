@@ -50,6 +50,8 @@ define( ["three", "container", "screen", "camera", "controls", "geometry", "ligh
         app.materials[app.currentMaterial].uniforms.mouse.value.y = input.mouse.ratio.y;
         app.materials[app.currentMaterial].uniforms.time.value = time.now();
         app.materials[app.currentMaterial].uniforms.mouseWheel.value = input.mouse.wheel;
+        app.materials[app.currentMaterial].uniforms.terrainHeight.value = gui.options.terrainHeight;
+        app.materials[app.currentMaterial].uniforms.sphereRadius.value = gui.options.sphereRadius;
 
 
         renderer.render( scene, camera );
