@@ -48,10 +48,11 @@ void main()
         // p = mod(p, vec3(4.0)) - 2.0;
         
         // Transformations
-        p = rotateX(rotateY(p, PI2), PIHalf);
+        p = rotateX(p, PIHalf);
         
         // Sphere UV
         vec2 uvSphere = kaelidoGrid(uvOffset + vec2(1.0 - mod(atan(p.y, p.x) / PI + 1.0, 1.0), 1.0 - reflectance(p, eye)) * uvScale);
+        // uvSphere = 1.0 - uvSphere;
         color = texture2D(picture1, uvSphere).rgb;
 
         // Displacement height from luminance
