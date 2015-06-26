@@ -16,3 +16,5 @@ uniform float sphereRadius;
 
 uniform float ratioMagma;
 uniform float ratioSky;
+uniform float uvScale;
+uniform vec2 uvOffset;

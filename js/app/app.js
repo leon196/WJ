@@ -1,5 +1,5 @@
-define( ["three", "container", "screen", "camera", "controls", "geometry", "light", "material", "renderer", "scene", "video", "time", "input", "gui"],
-  function ( THREE, container, screen, camera, controls, geometry, light, material, renderer, scene, video, time, input, gui ) 
+define( ["three", "container", "screen", "camera", "controls", "geometry", "light", "material", "texture", "renderer", "scene", "video", "time", "input", "gui"],
+  function ( THREE, container, screen, camera, controls, geometry, light, material, texture, renderer, scene, video, time, input, gui ) 
   {
     var app = 
     {
@@ -26,16 +26,26 @@ define( ["three", "container", "screen", "camera", "controls", "geometry", "ligh
           quad.material = material.getShaderMaterial();
         });
 
-        gui.settings.rayMax.onChange(function(value)
-        {
-          material.setRayMax(value);
-          quad.material = material.getShaderMaterial();
-        });
-
         gui.settings.rayEpsilon.onChange(function(value)
         {
           material.setRayEpsilon(value);
           quad.material = material.getShaderMaterial();
+        });
+
+        gui.settings.texture.onChange(function(value)
+        {
+          if (value == 'Earth')
+          {
+            quad.material.uniforms.picture1.value = texture.earth;
+          }
+          else if (value == 'Fulldome')
+          {
+            quad.material.uniforms.picture1.value = texture.fulldome;
+          }
+          else if (value == 'Video')
+          {
+            quad.material.uniforms.picture1.value = video.texture; 
+          }
         });
       },
 
@@ -51,11 +61,14 @@ define( ["three", "container", "screen", "camera", "controls", "geometry", "ligh
         quad.material.uniforms.mouse.value.x = input.mouse.ratio.x;
         quad.material.uniforms.mouse.value.y = input.mouse.ratio.y;
         quad.material.uniforms.time.value = time.now();
-        quad.material.uniforms.mouseWheel.value = input.mouse.wheel;
+        quad.material.uniforms.mouseWheel.value = input.mouse.wheel * input.mouse.wheel;
         quad.material.uniforms.terrainHeight.value = gui.options.terrainHeight;
         quad.material.uniforms.sphereRadius.value = gui.options.sphereRadius;
         quad.material.uniforms.ratioMagma.value = gui.options.ratioMagma;
         quad.material.uniforms.ratioSky.value = gui.options.ratioSky;
+        quad.material.uniforms.uvScale.value = gui.options.uvScale;
+        quad.material.uniforms.uvOffset.value.x = input.mouse.offset.x;
+        quad.material.uniforms.uvOffset.value.y = input.mouse.offset.y;
 
         renderer.render( scene, camera );
       }

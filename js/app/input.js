@@ -33,11 +33,12 @@ define( ["three", "container"], function ( THREE, container )
 		{
 			position: vec2(0, 0),
 			ratio: vec2(0, 0),
-			wheel: 0,
+			wheel: 1,
 			lastRatio: vec2(0, 0),
 			pressed: false,
 			dragging: false,
 			velocity: vec3(0, 0, 0),
+			offset: vec2(0, 0),
 			button: 0,
 			move: function (x, y)
 			{
@@ -47,6 +48,7 @@ define( ["three", "container"], function ( THREE, container )
 			{
 				input.mouse.pressed = true;
 				input.mouse.button = event.button;
+				console.log('down')
 			},
 			up: function ()
 			{
@@ -54,6 +56,20 @@ define( ["three", "container"], function ( THREE, container )
 				input.mouse.velocity.x = input.mouse.position.x / container.offsetWidth - input.mouse.lastRatio.x;
 				input.mouse.velocity.y = input.mouse.position.y / container.offsetHeight - input.mouse.lastRatio.y;
 				input.mouse.velocity.z = input.mouse.velocity.y;
+				input.mouse.button = -1;
+				console.log('up')
+			},
+			out: function ()
+			{
+				if (input.mouse.pressed)
+				{
+					input.mouse.velocity.x = input.mouse.position.x / container.offsetWidth - input.mouse.lastRatio.x;
+					input.mouse.velocity.y = input.mouse.position.y / container.offsetHeight - input.mouse.lastRatio.y;
+					input.mouse.velocity.z = input.mouse.velocity.y;
+					input.mouse.pressed = false;
+					input.mouse.button = -1;
+				}
+				console.log('out')
 			},
 			update: function ()
 			{
@@ -63,29 +79,47 @@ define( ["three", "container"], function ( THREE, container )
 				{
 					if (input.mouse.pressed)
 					{
-						if (input.mouse.button == 0)
+						console.log(input.mouse.button)
+						if (input.mouse.button === 0)
 						{
-							input.mouse.ratio.x += ratio.x - input.mouse.lastRatio.x;
-							input.mouse.ratio.y += ratio.y - input.mouse.lastRatio.y;
+							input.mouse.ratio.x += (ratio.x - input.mouse.lastRatio.x) / input.mouse.wheel;
+							input.mouse.ratio.y += (ratio.y - input.mouse.lastRatio.y) / input.mouse.wheel;
 						}
 						else if (input.mouse.button == 1)
 						{
 							input.mouse.wheel += ratio.y - input.mouse.lastRatio.y;
+							input.mouse.wheel = clamp(input.mouse.wheel, -8, 8);
+						}
+						else
+						{
+							input.mouse.offset.x += (ratio.x - input.mouse.lastRatio.x) / input.mouse.wheel;
+							input.mouse.offset.y += (ratio.y - input.mouse.lastRatio.y) / input.mouse.wheel;
 						}
 					}
 					else
 					{
-						if (input.mouse.button == 0 || input.mouse.button == -1)
+						if (input.mouse.button == -1)
 						{
 							input.mouse.ratio.x += input.mouse.velocity.x;
 							input.mouse.ratio.y += input.mouse.velocity.y;
 							input.mouse.velocity.x *= 0.99;
 							input.mouse.velocity.y *= 0.99;
+							input.mouse.wheel += input.mouse.velocity.z;
+							input.mouse.wheel = clamp(input.mouse.wheel, -8, 8);
+							input.mouse.velocity.z *= 0.9;
 						}
-						else if (input.mouse.button == 1 || input.mouse.button == -1)
+						else if (input.mouse.button == 1)
 						{
 							input.mouse.wheel += input.mouse.velocity.z;
+							input.mouse.wheel = clamp(input.mouse.wheel, -8, 8);
 							input.mouse.velocity.z *= 0.9;
+						}
+						else if (input.mouse.button == 0)
+						{
+							input.mouse.ratio.x += input.mouse.velocity.x;
+							input.mouse.ratio.y += input.mouse.velocity.y;
+							input.mouse.velocity.x *= 0.99;
+							input.mouse.velocity.y *= 0.99;
 						}
 					}
 				}
@@ -107,6 +141,8 @@ define( ["three", "container"], function ( THREE, container )
 		{
 			container.addEventListener( 'mousedown', input.mousedown, false );
 			container.addEventListener( 'mousemove', input.mousemove, false );
+			container.addEventListener( 'mouseup', input.mouseup, false );
+			container.addEventListener( 'mouseout', input.mouseout, false );
 
 			container.addEventListener( 'mousewheel', input.mousewheel, false );
 			container.addEventListener( 'DOMMouseScroll', input.mousewheel, false ); // firefox
@@ -118,8 +154,6 @@ define( ["three", "container"], function ( THREE, container )
 		mousedown: function ( event ) 
 		{
 			input.mouse.down();
-			container.removeEventListener( 'mousedown', input.mousedown, false );
-			container.addEventListener( 'mouseup', input.mouseup, false );
 		},
 
 		mousemove: function ( event ) 
@@ -130,8 +164,11 @@ define( ["three", "container"], function ( THREE, container )
 		mouseup: function ( event ) 
 		{
 			input.mouse.up();
-			container.removeEventListener( 'mouseup', input.mouseup, false );
-			container.addEventListener( 'mousedown', input.mousedown, false );
+		},
+
+		mouseout: function ( event ) 
+		{
+			input.mouse.out();
 		},
 
 		mousewheel: function ( event )

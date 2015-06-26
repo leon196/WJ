@@ -37,7 +37,7 @@ vec2 wrapUV (vec2 uv)
 
 vec2 kaelidoGrid(vec2 p) 
 { 
-	return vec2(step(mod(p, 2.0), vec2(1.0))); 
+	return mod(mix(p, 1.0 - p, vec2(step(mod(p, 2.0), vec2(1.0)))), 1.0); 
 }
 
 vec2 mouseFromCenter (vec2 mouse, vec2 resolution)

@@ -21,7 +21,7 @@ define( [
     screenSize : { type: "v2", value: new THREE.Vector2( container.offsetWidth, container.offsetHeight ) },
     mouse : { type: "v2", value: new THREE.Vector2( 0, 0 ) },
     picture1: { type: "t", value: texture.earth },
-    picture2: { type: "t", value: texture.texture2 },
+    picture2: { type: "t", value: texture.background },
     video: { type: "t", value: video.texture },
     fbo: { type: "t", value: video.texture },
     mouseWheel: { type: "f", value: 0 },
@@ -29,7 +29,9 @@ define( [
     sphereRadius: { type: "f", value: 0.9 },
     time: { type: "f", value: 0 },
     ratioMagma: { type: "f", value: 0 },
-    ratioSky: { type: "f", value: 0 }
+    ratioSky: { type: "f", value: 0 },
+    uvScale: { type: "f", value: 1 },
+    uvOffset: { type: "v2", value: new THREE.Vector2( 0, 0 ) }
   };
 
   var material = {
