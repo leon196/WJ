@@ -3,26 +3,40 @@ define( ["three", "container", "screen", "camera", "controls", "geometry", "ligh
   {
     var app = 
     {
-
-      materials: 
-      [
-        material.shaderRaymarching2,
-        material.shaderRaymarching,
-        material.shaderPlanet
-      ],
-
-      currentMaterial: 0,
-
       init: function () 
       {
         var plane = new THREE.PlaneBufferGeometry( screen.getWidth(), screen.getHeight() );
-        quad = new THREE.Mesh( plane, app.materials[app.currentMaterial] );
+        quad = new THREE.Mesh( plane, material.getShaderMaterial() );
         scene.add( quad );
         
         camera.position.z = 100;
 
         controls.enabled = false;
         input.mouse.dragging = true;
+
+        gui.settings.resolution.onChange(function(value)
+        {
+          renderer.setPixelRatio(1 / value);
+          renderer.setSize( container.offsetWidth, container.offsetHeight );
+        });
+
+        gui.settings.rayCount.onChange(function(value)
+        {
+          material.setRayCount(value);
+          quad.material = material.getShaderMaterial();
+        });
+
+        gui.settings.rayMax.onChange(function(value)
+        {
+          material.setRayMax(value);
+          quad.material = material.getShaderMaterial();
+        });
+
+        gui.settings.rayEpsilon.onChange(function(value)
+        {
+          material.setRayEpsilon(value);
+          quad.material = material.getShaderMaterial();
+        });
       },
 
       animate: function () 
@@ -30,29 +44,18 @@ define( ["three", "container", "screen", "camera", "controls", "geometry", "ligh
         window.requestAnimationFrame( app.animate );
 
         controls.update();
+        input.mouse.update();
 
-        if (input.keyboard.left.fired)
-        {
-          input.keyboard.left.fired = false;
-          app.currentMaterial = (app.currentMaterial + app.materials.length - 1) % app.materials.length;
-          quad.material = app.materials[app.currentMaterial];
-        }
-        else if (input.keyboard.right.fired)
-        {
-          input.keyboard.right.fired = false;
-          app.currentMaterial = (app.currentMaterial + 1) % app.materials.length;
-          quad.material = app.materials[app.currentMaterial];
-        }
-
-        app.materials[app.currentMaterial].uniforms.screenSize.value.x = screen.getWidth();
-        app.materials[app.currentMaterial].uniforms.screenSize.value.y = screen.getHeight();
-        app.materials[app.currentMaterial].uniforms.mouse.value.x = input.mouse.ratio.x;
-        app.materials[app.currentMaterial].uniforms.mouse.value.y = input.mouse.ratio.y;
-        app.materials[app.currentMaterial].uniforms.time.value = time.now();
-        app.materials[app.currentMaterial].uniforms.mouseWheel.value = input.mouse.wheel;
-        app.materials[app.currentMaterial].uniforms.terrainHeight.value = gui.options.terrainHeight;
-        app.materials[app.currentMaterial].uniforms.sphereRadius.value = gui.options.sphereRadius;
-
+        quad.material.uniforms.screenSize.value.x = screen.getWidth();
+        quad.material.uniforms.screenSize.value.y = screen.getHeight();
+        quad.material.uniforms.mouse.value.x = input.mouse.ratio.x;
+        quad.material.uniforms.mouse.value.y = input.mouse.ratio.y;
+        quad.material.uniforms.time.value = time.now();
+        quad.material.uniforms.mouseWheel.value = input.mouse.wheel;
+        quad.material.uniforms.terrainHeight.value = gui.options.terrainHeight;
+        quad.material.uniforms.sphereRadius.value = gui.options.sphereRadius;
+        quad.material.uniforms.ratioMagma.value = gui.options.ratioMagma;
+        quad.material.uniforms.ratioSky.value = gui.options.ratioSky;
 
         renderer.render( scene, camera );
       }
