@@ -15,8 +15,10 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
       rayCount: 64,
       rayEpsilon: 0.0001,
       rayMax: 10,
+      uvOffset: 0,
       texture: '',
-      uvScale: 1
+      uvScale: 1,
+      repeat: 0
     },
 
     settings: {},
@@ -34,11 +36,13 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
         gui.options, 'terrainHeight', -0.5, 0.5).name('Height scale');
       gui.settings.uvScale = gui.folders.transformation.add(
         gui.options, 'uvScale', 1, 8).name('UV scale');
+      gui.settings.rayCountuvOffset = gui.folders.transformation.add(
+        gui.options, 'uvOffset', 0, 2).name('UV offset');
       gui.folders.transformation.open();
 
       gui.folders.color = gui.dat.addFolder('Color');
       gui.settings.texture = gui.folders.color.add(
-        gui.options, 'texture', [ 'Earth', 'Video' ]).name('Texture');
+        gui.options, 'texture', [ 'Earth', 'Video', 'Fulldome' ]).name('Texture');
       gui.settings.ratioMagma = gui.folders.color.add(
         gui.options, 'ratioMagma', 0, 1).name('Invert');
       gui.settings.ratioSky = gui.folders.color.add(
@@ -52,9 +56,14 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
         gui.options, 'rayEpsilon', 0.0000001, 0.001).name('Ray epsilon');
       gui.settings.rayCount = gui.folders.raymarching.add(
         gui.options, 'rayCount', 2, 100).step(1).name('Ray count');
+      gui.settings.repeat = gui.folders.raymarching.add(
+        gui.options, 'repeat', 0, 1).name('Repeat');
       gui.folders.raymarching.open();
       // gui.dat.add(controls, 'enabled').name('Trackball controls').listen();
       // gui.dat.add(input.mouse, 'dragging').name('Mouse dragging').listen();
+
+
+      // gui.dat.close();
     },
 
     update: function ()

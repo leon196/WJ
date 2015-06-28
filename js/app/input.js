@@ -55,7 +55,7 @@ define( ["three", "container"], function ( THREE, container )
 				input.mouse.velocity.x = input.mouse.position.x / container.offsetWidth - input.mouse.lastRatio.x;
 				input.mouse.velocity.y = input.mouse.position.y / container.offsetHeight - input.mouse.lastRatio.y;
 				input.mouse.velocity.z = input.mouse.velocity.y;
-				input.mouse.button = -1;
+				// input.mouse.button = -1;
 			},
 			update: function ()
 			{
@@ -65,7 +65,6 @@ define( ["three", "container"], function ( THREE, container )
 				{
 					if (input.mouse.pressed)
 					{
-						console.log(input.mouse.button)
 						if (input.mouse.button === 0)
 						{
 							input.mouse.ratio.x += (ratio.x - input.mouse.lastRatio.x) / input.mouse.wheel;

@@ -31,7 +31,12 @@ define( [
     ratioMagma: { type: "f", value: 0 },
     ratioSky: { type: "f", value: 0 },
     uvScale: { type: "f", value: 1 },
-    uvOffset: { type: "v2", value: new THREE.Vector2( 0, 0 ) }
+    uvOffset: { type: "v2", value: new THREE.Vector2( 0, 0 ) },
+    eye: { type: "v3", value: new THREE.Vector3( 0, 0, -1.5 ) },
+    front: { type: "v3", value: new THREE.Vector3( 0, 0, 1 ) },
+    up: { type: "v3", value: new THREE.Vector3( 0, 1, 0 ) },
+    right: { type: "v3", value: new THREE.Vector3( 1, 0, 0 ) },
+    repeat: { type: "f", value: 0 }
   };
 
   var material = {
@@ -67,7 +72,14 @@ define( [
         fragmentShader: raymarching2Frag.value,
         side: THREE.DoubleSide
       });
-    }
+    },
+
+    effect: new THREE.ShaderMaterial( {
+      uniforms: commonUniforms,
+      vertexShader: simpleVert.value,
+      fragmentShader: effectFrag.value,
+      side: THREE.DoubleSide
+    })
   };
 
   return material;

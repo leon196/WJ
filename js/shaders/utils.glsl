@@ -91,6 +91,11 @@ float intersection( float d1, float d2 )
     return max(d1,d2);
 }
 
+vec3 grid(vec3 p, vec3 size)
+{
+  return mod(p, size) - size * 0.5;
+}
+
 // hash based 3d value noise
 // function taken from https://www.shadertoy.com/view/XslGRr
 // Created by inigo quilez - iq/2013
