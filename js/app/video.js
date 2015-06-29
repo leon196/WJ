@@ -12,6 +12,10 @@ define( ["three"], function ( THREE ) {
     texture: texture
   };
 
+  // container.pause();
+  // container.currentTime = Math.random() * container.duration;
+  // console.log(container);
+
   return video;
 
 });

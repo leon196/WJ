@@ -18,7 +18,13 @@ define( [
       uTime: { type: "f", value: 0 },
       uRenderTarget: { type: "t", value: texture.renderTarget1 },
       uTexture: { type: "t", value: texture.background },
-      uVideo: { type: "t", value: video.texture }
+      uVideo: { type: "t", value: video.texture },
+      uFilter5x5  : { type: "fv1", value: [
+  			-1,-1,-1,-1,-1,
+  			-1,-1,-1,-1,-1,
+  			-1,-1,24,-1,-1,
+  			-1,-1,-1,-1,-1,
+  			-1,-1,-1,-1,-1] }
     }
 
     var raymarchingUniforms =

@@ -10,19 +10,19 @@ float oscillation (float t, float speed)
   	return sin(t * speed) * 0.5 + 0.5;
 }
 
-float segment(float amount, float segments) 
-{ 
-	return floor(amount * segments) / segments; 
+float segment(float amount, float segments)
+{
+	return floor(amount * segments) / segments;
 }
 
-vec2 pixelize(vec2 uv, float segments) 
-{ 
-	return floor(uv * segments) / segments; 
+vec2 pixelize(vec2 uv, float segments)
+{
+	return floor(uv * segments) / segments;
 }
 
-vec4 posterize ( vec4 color, float segments ) 
-{ 
-	return vec4(floor(color.rgb * segments) / segments, 1.0); 
+vec4 posterize ( vec4 color, float segments )
+{
+	return vec4(floor(color.rgb * segments) / segments, 1.0);
 }
 
 vec2 videoUV (vec2 uv)
@@ -35,9 +35,9 @@ vec2 wrapUV (vec2 uv)
 	return mod(abs(uv), 1.0);
 }
 
-vec2 kaelidoGrid(vec2 p) 
-{ 
-	return mod(mix(p, 1.0 - p, vec2(step(mod(p, 2.0), vec2(1.0)))), 1.0); 
+vec2 kaelidoGrid(vec2 p)
+{
+	return mod(mix(p, 1.0 - p, vec2(step(mod(p, 2.0), vec2(1.0)))), 1.0);
 }
 
 vec2 mouseFromCenter (vec2 mouse, vec2 resolution)
@@ -48,14 +48,24 @@ vec2 mouseFromCenter (vec2 mouse, vec2 resolution)
   	return mouse;
 }
 
-float luminance ( vec3 color ) 
-{ 
-	return (color.r + color.g + color.b) / 3.0; 
+float luminance ( vec3 color )
+{
+	return (color.r + color.g + color.b) / 3.0;
 }
 
-float reflectance(vec3 a, vec3 b) 
-{ 
-	return dot(normalize(a), normalize(b)) * 0.5 + 0.5; 
+float reflectance(vec3 a, vec3 b)
+{
+	return dot(normalize(a), normalize(b)) * 0.5 + 0.5;
+}
+
+// From Anton Roy -> https://www.shadertoy.com/view/Xs23DG
+vec4 filter5x5 (float filter[25], sampler2D bitmap, vec2 uv, vec2 dimension)
+{
+  vec4 color = vec4(0.);
+  for (int i = 0; i < 5; ++i)
+    for (int j = 0; j < 5; ++j)
+      color += filter[i * 5 + j] * texture2D(bitmap, uv + vec2(i - 2, j - 2) / dimension);
+  return color;
 }
 
 // by inigo quilez
@@ -71,9 +81,9 @@ vec3 rotateX(vec3 v, float t)
     return vec3(v.x, v.y * cost - v.z * sint, v.y * sint + v.z * cost);
 }
 
-float sphere( vec3 p, float s ) 
-{ 
-	return length(p)-s; 
+float sphere( vec3 p, float s )
+{
+	return length(p)-s;
 }
 
 float addition( float d1, float d2 )
