@@ -51,20 +51,20 @@ define( ["three", "container", "screen", "camera", "controls", "helper", "geomet
         texture.nextTarget();
         var renderTargetDraw = texture.getCurrentTarget();
         renderer.render( app.sceneRender, camera, renderTargetDraw, true );
-/*
-        uniforms.uDisplacementScale.value = gui.options.uDisplacementScale;
-        uniforms.uPlanetRadius.value = gui.options.uPlanetRadius;
-        uniforms.uRatioMagma.value = gui.options.uRatioMagma;
-        uniforms.uRatioSky.value = gui.options.uRatioSky;
-        uniforms.uScaleUV.value = gui.options.uScaleUV;
-        uniforms.uOffsetUV.value.y = gui.options.uOffsetUV;
-        uniforms.uRepeat.value = gui.options.uRepeat;
+        //
+        // uniforms.uDisplacementScale.value = gui.options.uDisplacementScale;
+        // uniforms.uPlanetRadius.value = gui.options.uPlanetRadius;
+        // uniforms.uRatioMagma.value = gui.options.uRatioMagma;
+        // uniforms.uRatioSky.value = gui.options.uRatioSky;
+        // uniforms.uScaleUV.value = gui.options.uScaleUV;
+        // uniforms.uOffsetUV.value.y = gui.options.uOffsetUV;
+        // uniforms.uRepeat.value = gui.options.uRepeat;
+        //
+        // uniforms.uEye.value = helper.position;
+        // uniforms.uFront.value = helper.getFront();
+        // uniforms.uUp.value = helper.getUp();
+        // uniforms.uRight.value = helper.getRight();
 
-        uniforms.uEye.value = helper.position;
-        uniforms.uFront.value = helper.getFront();
-        uniforms.uUp.value = helper.getUp();
-        uniforms.uRight.value = helper.getRight();
-*/
 
 				// renderer.clear();
 
