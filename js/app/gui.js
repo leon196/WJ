@@ -1,24 +1,24 @@
 
 define( ["three", "container", "renderer", "controls", "input"], function ( THREE, container, renderer, controls, input ) {
 
-  var gui = 
+  var gui =
   {
     dat: new dat.GUI(),
 
-    options:  
+    options:
     {
       resolution: 2,
-      terrainHeight: 0.1,
-      sphereRadius: 0.9,
-      ratioMagma: 0,
-      ratioSky: 1,
+      uDisplacementScale: 0.1,
+      uPlanetRadius: 0.9,
+      uRatioMagma: 0,
+      uRatioSky: 1,
       rayCount: 64,
       rayEpsilon: 0.0001,
-      rayMax: 10,
-      uvOffset: 0,
+      rayMax: 10.1,
+      uOffsetUV: 0,
       texture: '',
-      uvScale: 1,
-      repeat: 0
+      uScaleUV: 1,
+      uRepeat: 0
     },
 
     settings: {},
@@ -30,23 +30,23 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
       gui.settings.resolution = gui.dat.add(gui.options, 'resolution', 1, 4).name('Pixel size').step(1);
 
       gui.folders.transformation = gui.dat.addFolder('Transformation');
-      gui.settings.sphereRadius = gui.folders.transformation.add(
-        gui.options, 'sphereRadius', 0.1, 1).name('Planet raduis');
-      gui.settings.terrainHeight = gui.folders.transformation.add(
-        gui.options, 'terrainHeight', -0.5, 0.5).name('Height scale');
-      gui.settings.uvScale = gui.folders.transformation.add(
-        gui.options, 'uvScale', 1, 8).name('UV scale');
-      gui.settings.rayCountuvOffset = gui.folders.transformation.add(
-        gui.options, 'uvOffset', 0, 2).name('UV offset');
+      gui.settings.uPlanetRadius = gui.folders.transformation.add(
+        gui.options, 'uPlanetRadius', 0.1, 1).name('Planet radius');
+      gui.settings.uDisplacementScale = gui.folders.transformation.add(
+        gui.options, 'uDisplacementScale', -0.5, 0.5).name('Displacement scale');
+      gui.settings.uScaleUV = gui.folders.transformation.add(
+        gui.options, 'uScaleUV', 1, 8).name('UV scale');
+      gui.settings.uOffsetUV = gui.folders.transformation.add(
+        gui.options, 'uOffsetUV', 0, 2).name('UV offset');
       gui.folders.transformation.open();
 
       gui.folders.color = gui.dat.addFolder('Color');
       gui.settings.texture = gui.folders.color.add(
         gui.options, 'texture', [ 'Earth', 'Video', 'Fulldome' ]).name('Texture');
-      gui.settings.ratioMagma = gui.folders.color.add(
-        gui.options, 'ratioMagma', 0, 1).name('Invert');
-      gui.settings.ratioSky = gui.folders.color.add(
-        gui.options, 'ratioSky', 0, 1).name('Sky');
+      gui.settings.uRatioMagma = gui.folders.color.add(
+        gui.options, 'uRatioMagma', 0, 1).name('Invert');
+      gui.settings.uRatioSky = gui.folders.color.add(
+        gui.options, 'uRatioSky', 0, 1).name('Sky');
       gui.folders.color.open();
 
       gui.folders.raymarching = gui.dat.addFolder('Raymarching');
@@ -56,8 +56,8 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
         gui.options, 'rayEpsilon', 0.0000001, 0.001).name('Ray epsilon');
       gui.settings.rayCount = gui.folders.raymarching.add(
         gui.options, 'rayCount', 2, 100).step(1).name('Ray count');
-      gui.settings.repeat = gui.folders.raymarching.add(
-        gui.options, 'repeat', 0, 1).name('Repeat');
+      gui.settings.uRepeat = gui.folders.raymarching.add(
+        gui.options, 'uRepeat', 0, 1).name('Repeat');
       gui.folders.raymarching.open();
       // gui.dat.add(controls, 'enabled').name('Trackball controls').listen();
       // gui.dat.add(input.mouse, 'dragging').name('Mouse dragging').listen();
@@ -68,7 +68,7 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
 
     update: function ()
     {
-        for (var i in gui.dat.__controllers) 
+        for (var i in gui.dat.__controllers)
         {
           gui.dat.__controllers[i].updateDisplay();
         }

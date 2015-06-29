@@ -4,100 +4,86 @@
 #include utils.glsl
 #include uniforms.glsl
 
+#define rayCount 64
+#define rayEpsilon 0.00001
+#define rayMin 0.1
+#define rayMax 1000.0
+
+uniform sampler2D uSamplerPlanet;
+uniform sampler2D uSamplerBackground;
+uniform vec3 uEye;
+uniform vec3 uFront;
+uniform vec3 uUp;
+uniform vec3 uRight;
+uniform vec2 uScaleUV;
+uniform vec2 uOffsetUV;
+uniform float uRepeat;
+uniform float uDisplacementScale;
+uniform float uPlanetRadius;
+uniform float uRatioMagma;
+uniform float uRatioSky;
+
 varying vec2 vUv;
 
-// Raymarching
-const float rayEpsilon = 0.001;
-const float rayMin = 0.1;
-const float rayMax = 4.0;
-const int rayCount = 16;
-
-// Camera
-vec3 eye = vec3(0, 0, -2.0);
-vec3 front = vec3(0, 0, 1);
-vec3 right = vec3(1, 0, 0);
-vec3 up = vec3(0, 1, 0);
-
-// Animation
-vec2 uvScale1 = vec2(2.0);
-vec2 uvScale2 = vec2(2.0);
-float translationSpeed = 0.4;
-float rotationSpeed = 0.1;
-
 // Colors
-vec3 skyColor = vec3(0, 0, 0.1);
-vec3 shadowColor = vec3(0.1, 0, 0);
+vec3 skyColor = vec3(0.3);
+vec3 shadowColor = vec3(0, 0, 0);
+vec3 glowColor = vec3(1.0);
 
 void main()
 {
     // Ray from UV
-    vec2 uv = gl_FragCoord.xy / screenSize.xy * 2.0 - 1.0;
-    uv.x *= screenSize.x / screenSize.y;
-    vec3 ray = normalize(front + right * uv.x + up * uv.y);
-    
+    vec2 uv = gl_FragCoord.xy / uResolution.xy * 2.0 - 1.0;
+    // vec2 uv = vUv * 2.0 - 1.0;
+    uv.x *= uResolution.x / uResolution.y;
+
+    vec3 ray = normalize(uFront + uRight * uv.x + uUp * uv.y);
+
     // Color
     vec3 color = shadowColor;
-    
-    // Animation
-    float translationTime = 0.0;//time * translationSpeed;
-    
+
     // Raymarching
     float t = 0.0;
     for (int r = 0; r < rayCount; ++r)
     {
         // Ray Position
-        vec3 p = eye + ray * t;
+        vec3 p = uEye + ray * t;
         vec3 originP = p;
-        
-        // Transformations
-        p = rotateY(p, PI / 2.0);
-        p = rotateX(p, PI / 2.0);
-        vec2 translate = vec2(0.0, translationTime);
-        
-        // Sphere UV
-        float angleXY = atan(p.y, p.x);
-        float angleXZ = atan(p.z, p.x);
-        vec2 sphereP1 = vec2(angleXY / PI, 1.0 - reflectance(p, eye)) * uvScale1;
-        vec2 sphereP2 = vec2(angleXY / PI, reflectance(p, eye)) * uvScale2;
-        sphereP1 += 0.5;
-        sphereP2 += mix(vec2(translationTime), vec2(-translationTime), 
-                        vec2(step(angleXY, 0.0), step(angleXZ, 0.0)));
-        vec2 uv1 = mod(mix(sphereP1, 1.0 - sphereP1, kaelidoGrid(sphereP1)), 1.0);
-        vec2 uv2 = mod(mix(sphereP2, 1.0 - sphereP2, kaelidoGrid(sphereP2)), 1.0);
-        
-        // Texture
-        vec3 texture = texture2D(video, uv1).rgb;
-        // vec3 texture2 = texture2D(picture, uv2).rgb;
 
-        // vec2 direction = normalize(videoUV(vUv) - vec2(0.5)) * 8.0;
-        // vec3 texture = blur(video, uv1, screenSize, direction).rgb;
-        color = texture;
-        
-        // Height from luminance
-        float luminance = (texture.r + texture.g + texture.b) / 3.0;
-        //texture = mix(texture, texture2, 1.0 - step(texture.g - texture.r - texture.b, -0.3));
-        luminance = (texture.r + texture.g + texture.b) / 3.0;
-        // luminance = sin(luminance / 0.6355);
-        
-        // Displacement
-        p -= normalize(p) * terrainHeight * luminance * reflectance(originP, eye);
-        
+        p = mix(p, grid(p, vec3(4.0)), uRepeat);
+
+        // Sphere UV
+        float x = atan(p.z, p.x) / PI / 2.0 + 0.5;
+        float y = acos(p.y / length(p)) / PI;
+        vec2 uvSphere = kaelidoGrid(uOffsetUV + vec2(x, y) * uScaleUV);
+        color = texture2D(uSamplerPlanet, vec2(x,y)).rgb;
+
+        // Displacement height from luminance
+        p -= normalize(p) * uPlanetRadius * (color.r + color.g + color.b) / 3.0;
+
         // Distance to Sphere
-        float d = sphere(p, sphereRadius);
-        
+        float d = substraction(sphere(uEye - originP, 0.1), sphere(p, uPlanetRadius));
+
         // Distance min or max reached
         if (d < rayEpsilon || t > rayMax)
         {
-            // Shadow from ray count
-            color = mix(color, shadowColor, float(r) / float(rayCount));
+            // color += (step(mod(x, 0.01), 0.0001) + step(mod(y, 0.01), 0.0001));
             // Sky color from distance
-            //color = mix(color, skyColor, smoothstep(rayMin, rayMax, t));
+            color = mix(color, texture2D(uSamplerBackground, vec2(x,y)).rgb, smoothstep(rayMin, rayMax, t));
+            // Shadow from ray count
+            color = mix(color, mix(glowColor, shadowColor, reflectance(originP, uEye)), float(r) / float(rayCount));
+
+            // Glow from ray direction
+            // color = mix(glowColor, shadowColor, reflectance(originP, eye));
             break;
         }
-        
+
         // Distance field step
         t += d;
     }
+
+    // Magma
+    color = mix(color, 0.25 / color, uRatioMagma);
 
     // Hop
     gl_FragColor = vec4(color, 1.0);

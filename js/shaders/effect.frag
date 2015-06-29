@@ -6,24 +6,24 @@ varying vec2 vUv;
 
 void main()
 {
-    vec2 uv = gl_FragCoord.xy / screenSize.xy * 2.0 - 1.0;
-    uv.x *= screenSize.x / screenSize.y;
+    vec2 uv = gl_FragCoord.xy / uResolution.xy * 2.0 - 1.0;
+    uv.x *= uResolution.x / uResolution.y;
 
-    // float index = uv.x + uv.y * screenSize.x;
+    // float index = uv.x + uv.y * uResolution.x;
 
     // index = index;//index * (1.0 + 0.1 * sin(time * 0.01));
     // index += time * 100000.0;
 
-    // vec3 color = texture2D(video, gl_FragCoord.xy / screenSize).rgb;
+    // vec3 color = texture2D(uVideo, gl_FragCoord.xy / uResolution).rgb;
     // float lum = (color.r + color.g + color.b) / 3.0;
 
-    // index += lum * screenSize.x;
+    // index += lum * uResolution.x;
 
-    // uv.x = mod(index, screenSize.x);
-    // uv.y = floor(index / screenSize.x);
-    // uv = mod(uv / screenSize, 1.0);
+    // uv.x = mod(index, uResolution.x);
+    // uv.y = floor(index / uResolution.x);
+    // uv = mod(uv / uResolution, 1.0);
 
-    // color = texture2D(video, uv).rgb;
+    // color = texture2D(uVideo, uv).rgb;
 
 
     float dist = mod(length(uv), 1.0);
@@ -31,7 +31,7 @@ void main()
     vec2 p = vec2(abs(angle / PI), clamp(1.0 - dist, 0.0, 1.0));
 
 
-    vec3 color = texture2D(video, p).rgb;
+    vec3 color = texture2D(uVideo, p).rgb;
 
     color = mix(color, color, p.x);
 

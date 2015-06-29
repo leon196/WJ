@@ -1,7 +1,7 @@
 
-define( ["three", "container"], function ( THREE, container ) 
+define( ["three", "container"], function ( THREE, container )
 {
-	var key = function () 
+	var key = function ()
 	{
 		this.fired = false;
 		this.pressed = false;
@@ -17,7 +17,7 @@ define( ["three", "container"], function ( THREE, container )
 		}
 	};
 
-	var input = 
+	var input =
 	{
 		keyboard:
 		{
@@ -44,7 +44,7 @@ define( ["three", "container"], function ( THREE, container )
 			{
 				input.mouse.position = vec2(x, y);
 			},
-			down: function ()
+			down: function (event)
 			{
 				input.mouse.pressed = true;
 				input.mouse.button = event.button;
@@ -135,17 +135,17 @@ define( ["three", "container"], function ( THREE, container )
 			window.addEventListener( 'keyup', input.keyup, false);
 		},
 
-		mousedown: function ( event ) 
+		mousedown: function ( event )
 		{
-			input.mouse.down();
+			input.mouse.down(event);
 		},
 
-		mousemove: function ( event ) 
+		mousemove: function ( event )
 		{
 			input.mouse.move(event.clientX, event.clientY);
 		},
 
-		mouseup: function ( event ) 
+		mouseup: function ( event )
 		{
 			input.mouse.up();
 		},
