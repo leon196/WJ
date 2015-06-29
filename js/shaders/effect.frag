@@ -26,18 +26,20 @@ void main()
 
     // color = texture2D(uVideo, uv).rgb;
 
+    vec4 renderTarget = texture2D(uRenderTarget, uv);
+    float lum = (renderTarget.r + renderTarget.g + renderTarget.b) / 3.0;
 
     // float dist = mod(length(uv), 1.0);
     float angle = atan(0.5 - uv.y, 0.5 - uv.x);
-    angle += snoise(uv * 100.0) * 10.0;
+    // angle += snoise(uv * 100.0) * 10.0;
     // vec2 p = vec2(abs(angle / PI), clamp(1.0 - dist, 0.0, 1.0));
-    vec2 p = vec2(cos(angle), sin(angle)) * 0.002;
+    vec2 p = vec2(cos(angle), sin(angle)) * 0.01 * abs(snoise(uv * 100.0));// * lum;
 
     // float angle = noise()
 
     vec4 video = texture2D(uVideo, uv);
-    vec4 renderTarget = texture2D(uRenderTarget, uv + p);
-    vec4 color = mix(renderTarget * vec4(vec3(0.98), 1.0), video, step(uMouse.x, distance(video.rgb, renderTarget.rgb)));
+    renderTarget = texture2D(uRenderTarget, uv + p);
+    vec4 color = mix(renderTarget * vec4(vec3(0.99), 1.0), video, step(uMouse.x, distance(video.rgb, renderTarget.rgb)));
 
     // color = mix(color, color, p.x);
 

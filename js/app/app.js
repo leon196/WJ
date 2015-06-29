@@ -18,6 +18,8 @@ define( ["three", "container", "screen", "camera", "controls", "helper", "geomet
           renderer.setPixelRatio(1 / value);
           renderer.setSize( container.offsetWidth, container.offsetHeight );
         });
+
+        console.log(document.getElementsByTagName("video"));
       },
 
       animate: function ()
