@@ -1,8 +1,10 @@
 
+#include utils.glsl
+#include uniforms.glsl
+
 varying vec2 vUv;
-uniform sampler2D uSampler;
 
 void main()
 {
-    gl_FragColor = texture2D(uSampler, gl_FragCoord.xy / screenSize.xy);
+    gl_FragColor = texture2D(uVideo, gl_FragCoord.xy / uResolution.xy);
 }

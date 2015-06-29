@@ -1,15 +1,5 @@
-define( ["renderer", "container"], function ( renderer, container ) 
+define( ["renderer", "container", "material"], function ( renderer, container, material )
 {
-  var screen =
-  {
-    getWidth: function()
-    {
-      return container.offsetWidth * renderer.getPixelRatio();
-    },
-    getHeight: function()
-    {
-      return container.offsetHeight * renderer.getPixelRatio();
-    }
-  };
+  var screen = new THREE.Mesh( new THREE.PlaneBufferGeometry( container.offsetWidth, container.offsetHeight ), material.simple );
   return screen;
 } );

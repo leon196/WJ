@@ -1,5 +1,5 @@
 
-define( ["three", "container", "renderer", "controls", "input"], function ( THREE, container, renderer, controls, input ) {
+define( ["three", "container", "renderer", "controls", "input", "screen", "material"], function ( THREE, container, renderer, controls, input, screen, material ) {
 
   var gui =
   {
@@ -7,7 +7,7 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
 
     options:
     {
-      resolution: 2,
+      pixelSize: 2,
       uDisplacementScale: 0.1,
       uPlanetRadius: 0.9,
       uRatioMagma: 0,
@@ -27,7 +27,7 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
 
     init: function ()
     {
-      gui.settings.resolution = gui.dat.add(gui.options, 'resolution', 1, 4).name('Pixel size').step(1);
+      gui.settings.pixelSize = gui.dat.add(gui.options, 'pixelSize', 1, 4).name('Pixel size').step(1);
 
       gui.folders.transformation = gui.dat.addFolder('Transformation');
       gui.settings.uPlanetRadius = gui.folders.transformation.add(
@@ -62,16 +62,25 @@ define( ["three", "container", "renderer", "controls", "input"], function ( THRE
       // gui.dat.add(controls, 'enabled').name('Trackball controls').listen();
       // gui.dat.add(input.mouse, 'dragging').name('Mouse dragging').listen();
 
-
       // gui.dat.close();
-    },
 
-    update: function ()
-    {
-        for (var i in gui.dat.__controllers)
-        {
-          gui.dat.__controllers[i].updateDisplay();
-        }
+      gui.settings.pixelSize.onChange(function(value)
+      {
+        renderer.setPixelRatio(1 / value);
+        renderer.setSize( container.offsetWidth, container.offsetHeight );
+      });
+
+      gui.settings.rayCount.onChange(function(value)
+      {
+        material.updateRaymarching(value, gui.options.rayEpsilon, gui.options.rayMax);
+        screen.material = material.getRaymarchingShaderMaterial();
+      });
+
+      gui.settings.rayEpsilon.onChange(function(value)
+      {
+        material.updateRaymarching(gui.options.rayCount, value, gui.options.rayMax);
+        screen.material = material.getRaymarchingShaderMaterial();
+      });
     }
   }
 

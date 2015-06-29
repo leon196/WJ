@@ -1,6 +1,7 @@
 define( [
   "three",
   "shader!simple.vert",
+  "shader!simple.frag",
   "shader!planet.frag",
   "shader!effect.frag",
   "texture",
@@ -8,7 +9,7 @@ define( [
   "renderer",
   "container",
   "gui"],
-  function ( THREE, simpleVert, planetFrag, effectFrag, texture, video, renderer, container, gui )
+  function ( THREE, simpleVert, simpleFrag, planetFrag, effectFrag, texture, video, renderer, container, gui )
   {
     var commonUniforms =
     {
@@ -43,6 +44,20 @@ define( [
     }
 
     var material = {
+      
+      simple: new THREE.ShaderMaterial( {
+        uniforms: commonUniforms,
+        vertexShader: simpleVert.value,
+        fragmentShader: simpleFrag.value,
+        side: THREE.DoubleSide
+      }),
+
+      effect: new THREE.ShaderMaterial( {
+        uniforms: commonUniforms,
+        vertexShader: simpleVert.value,
+        fragmentShader: effectFrag.value,
+        side: THREE.DoubleSide
+      }),
 
       updateRaymarching: function (rayCount, rayEpsilon, rayMax)
       {
@@ -59,14 +74,7 @@ define( [
           fragmentShader: planetFrag.value,
           side: THREE.DoubleSide
         });
-      },
-
-      effect: new THREE.ShaderMaterial( {
-        uniforms: commonUniforms,
-        vertexShader: simpleVert.value,
-        fragmentShader: effectFrag.value,
-        side: THREE.DoubleSide
-      })
+      }
   };
 
   return material;
