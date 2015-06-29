@@ -7,7 +7,7 @@ define( ["three", "container", "renderer", "controls", "input", "screen", "mater
 
     options:
     {
-      pixelSize: 2,
+      pixelSize: 1,
       uDisplacementScale: 0.1,
       uPlanetRadius: 0.9,
       uRatioMagma: 0,
@@ -62,13 +62,7 @@ define( ["three", "container", "renderer", "controls", "input", "screen", "mater
       // gui.dat.add(controls, 'enabled').name('Trackball controls').listen();
       // gui.dat.add(input.mouse, 'dragging').name('Mouse dragging').listen();
 
-      // gui.dat.close();
-
-      gui.settings.pixelSize.onChange(function(value)
-      {
-        renderer.setPixelRatio(1 / value);
-        renderer.setSize( container.offsetWidth, container.offsetHeight );
-      });
+      gui.dat.close();
 
       gui.settings.rayCount.onChange(function(value)
       {

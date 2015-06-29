@@ -16,6 +16,7 @@ define( [
       uResolution : { type: "v2", value: new THREE.Vector2( container.offsetWidth, container.offsetHeight ) },
       uMouse : { type: "v3", value: new THREE.Vector3( 0, 0, 0 ) },
       uTime: { type: "f", value: 0 },
+      uRenderTarget: { type: "t", value: texture.renderTarget1 },
       uTexture: { type: "t", value: texture.background },
       uVideo: { type: "t", value: video.texture }
     }
@@ -25,6 +26,7 @@ define( [
       uResolution : { type: "v2", value: new THREE.Vector2( container.offsetWidth, container.offsetHeight ) },
       uMouse : { type: "v3", value: new THREE.Vector3( 0, 0, 0 ) },
       uTime: { type: "f", value: 0 },
+      uRenderTarget: { type: "t", value: texture.renderTarget1 },
       uTexture: { type: "t", value: texture.background },
       uVideo: { type: "t", value: video.texture },
 
@@ -44,7 +46,7 @@ define( [
     }
 
     var material = {
-      
+
       simple: new THREE.ShaderMaterial( {
         uniforms: commonUniforms,
         vertexShader: simpleVert.value,

@@ -1,13 +1,14 @@
 
 #include utils.glsl
 #include uniforms.glsl
+#include noise2D.glsl
 
 varying vec2 vUv;
 
 void main()
 {
-    vec2 uv = gl_FragCoord.xy / uResolution.xy * 2.0 - 1.0;
-    uv.x *= uResolution.x / uResolution.y;
+    vec2 uv = gl_FragCoord.xy / uResolution.xy;
+    // uv.x *= uResolution.x / uResolution.y;
 
     // float index = uv.x + uv.y * uResolution.x;
 
@@ -26,15 +27,20 @@ void main()
     // color = texture2D(uVideo, uv).rgb;
 
 
-    float dist = mod(length(uv), 1.0);
-    float angle = atan(uv.y, uv.x);
-    vec2 p = vec2(abs(angle / PI), clamp(1.0 - dist, 0.0, 1.0));
+    // float dist = mod(length(uv), 1.0);
+    float angle = atan(0.5 - uv.y, 0.5 - uv.x);
+    angle += snoise(uv * 100.0) * 10.0;
+    // vec2 p = vec2(abs(angle / PI), clamp(1.0 - dist, 0.0, 1.0));
+    vec2 p = vec2(cos(angle), sin(angle)) * 0.002;
 
+    // float angle = noise()
 
-    vec3 color = texture2D(uVideo, p).rgb;
+    vec4 video = texture2D(uVideo, uv);
+    vec4 renderTarget = texture2D(uRenderTarget, uv + p);
+    vec4 color = mix(renderTarget * vec4(vec3(0.98), 1.0), video, step(uMouse.x, distance(video.rgb, renderTarget.rgb)));
 
-    color = mix(color, color, p.x);
+    // color = mix(color, color, p.x);
 
     // Hop
-    gl_FragColor = vec4(color, 1.0);
-}
+    gl_FragColor = color;
+  }

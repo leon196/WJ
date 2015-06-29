@@ -1,9 +1,9 @@
-define( ["three", "container"], function ( THREE, container ) {
+define( ["three", "container", "gui"], function ( THREE, container, gui ) {
 
   container.innerHTML = "";
   var renderer = new THREE.WebGLRenderer( { clearColor: 0x000000 } );
-  
-  renderer.setPixelRatio(0.5);
+
+  renderer.setPixelRatio(1 / gui.options.pixelSize);
 
   renderer.sortObjects = false;
   renderer.autoClear = false;

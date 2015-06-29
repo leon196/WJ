@@ -3,11 +3,21 @@ define( ["three", "container", "screen", "camera", "controls", "helper", "geomet
   {
     var app =
     {
+      sceneRender: new THREE.Scene(),
+      screenRender: new THREE.Mesh( new THREE.PlaneBufferGeometry( container.offsetWidth, container.offsetHeight ), material.effect ),
+
       init: function ()
       {
         scene.add( screen );
+        app.sceneRender.add ( app.screenRender );
         camera.position.z = 10;
         helper.position.z = -4.5;
+
+        gui.settings.pixelSize.onChange(function(value)
+        {
+          renderer.setPixelRatio(1 / value);
+          renderer.setSize( container.offsetWidth, container.offsetHeight );
+        });
       },
 
       animate: function ()
@@ -19,12 +29,26 @@ define( ["three", "container", "screen", "camera", "controls", "helper", "geomet
 
         var uniforms = screen.material.uniforms;
 
-        uniforms.uResolution.value.x = container.offsetWidth * renderer.getPixelRatio();
-        uniforms.uResolution.value.y = container.offsetHeight * renderer.getPixelRatio();
-        uniforms.uMouse.value.x = input.mouse.ratio.x;
-        uniforms.uMouse.value.y = input.mouse.ratio.y;
-        uniforms.uMouse.value.z = input.mouse.wheel;
-        uniforms.uTime.value = time.now();
+        screen.material.uniforms.uResolution.value.x = container.offsetWidth * renderer.getPixelRatio();
+        screen.material.uniforms.uResolution.value.y = container.offsetHeight * renderer.getPixelRatio();
+        screen.material.uniforms.uMouse.value.x = input.mouse.ratio.x;
+        screen.material.uniforms.uMouse.value.y = input.mouse.ratio.y;
+        screen.material.uniforms.uMouse.value.z = input.mouse.wheel;
+        screen.material.uniforms.uTime.value = time.now();
+
+        app.screenRender.material.uniforms.uResolution.value.x = container.offsetWidth * renderer.getPixelRatio();
+        app.screenRender.material.uniforms.uResolution.value.y = container.offsetHeight * renderer.getPixelRatio();
+        app.screenRender.material.uniforms.uMouse.value.x = input.mouse.ratio.x;
+        app.screenRender.material.uniforms.uMouse.value.y = input.mouse.ratio.y;
+        app.screenRender.material.uniforms.uMouse.value.z = input.mouse.wheel;
+        app.screenRender.material.uniforms.uTime.value = time.now();
+
+        var renderTargetBind = texture.getCurrentTarget();
+        app.screenRender.material.uniforms.uRenderTarget.value = renderTargetBind;
+
+        texture.nextTarget();
+        var renderTargetDraw = texture.getCurrentTarget();
+        renderer.render( app.sceneRender, camera, renderTargetDraw, true );
 /*
         uniforms.uDisplacementScale.value = gui.options.uDisplacementScale;
         uniforms.uPlanetRadius.value = gui.options.uPlanetRadius;
@@ -39,6 +63,10 @@ define( ["three", "container", "screen", "camera", "controls", "helper", "geomet
         uniforms.uUp.value = helper.getUp();
         uniforms.uRight.value = helper.getRight();
 */
+
+				// renderer.clear();
+
+        screen.material.uniforms.uRenderTarget.value = texture.getCurrentTarget();
         renderer.render( scene, camera );
       }
     };

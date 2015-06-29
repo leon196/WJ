@@ -61,6 +61,9 @@ define( ["three", "container"], function ( THREE, container )
 			{
 				var ratio = vec2(input.mouse.position.x / container.offsetWidth, input.mouse.position.y / container.offsetHeight);
 
+					input.mouse.ratio.x = ratio.x;
+					input.mouse.ratio.y = ratio.y;
+/*
 				if (input.mouse.dragging || input.mouse.button == -1)
 				{
 					if (input.mouse.pressed)
@@ -110,7 +113,7 @@ define( ["three", "container"], function ( THREE, container )
 				}
 
 				input.mouse.lastRatio = vec2(ratio.x, ratio.y);
-
+*/
 				if (input.keyboard.space.fired)
 				{
 					input.keyboard.space.fired = false;
