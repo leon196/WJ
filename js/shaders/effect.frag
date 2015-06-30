@@ -45,7 +45,7 @@ void main()
     // details = pow(2.0, details);
     // uv = floor(uvScreen * details) / details;
 
-    float dist = length(uv) * 2.0;// - uTime * 1.0;
+    float dist = length(uv);// - uTime * 1.0;
     float angle = atan(uv.y, uv.x);
     // angle += cnoise(uv * 100.0) * 2.0;
     // vec2 p = vec2(abs(angle / PI), clamp(1.0 - dist, 0.0, 1.0));
@@ -61,19 +61,23 @@ void main()
     float a = angle / PI;
     a *= 4.0;
     float sens = mod(floor(a), 2.0);
-    a += uTime * 0.1 * mix(-1.0, 1.0, sens);
+    a += uTime * 0.2 * mix(-1.0, 1.0, sens);
     a = mix(1.0 - a, a, mod(floor(a), 2.0));
 
-    float d = mix(1.0 - dist, dist, mod(floor(dist), 2.0));
+    // dist *= segment(a, 4.0);
+
+    float d = dist * 4.0;
+    d += uTime * 0.4 * mix(-1.0, 1.0, mod(floor(d), 2.0));
+    d = mix(1.0 - d, d, mod(floor(d), 2.0));
     uv = mod(vec2(a, d), 1.0);
 
 
     vec4 video = texture2D(uVideo, uv);
-    // vec4 renderTarget = texture2D(uRenderTarget, uv);// + p);
+    vec4 renderTarget = texture2D(uRenderTarget, uv);// + p);
 
     // if (dist < 1.0 / uResolution.x) video = vec4(vec3(0.0), 1.0);//vec4(snoise(vec2(uTime * 0.1)), snoise(vec2(uTime * 0.01)), snoise(vec2(uTime * 0.5)), 1.0);
 
-    // vec4 color = mix(renderTarget, video, step(0.5, distance(video.rgb, renderTarget.rgb)));
+    // vec4 color = mix(renderTarget, video, step(0.75, distance(video.rgb, renderTarget.rgb)));
     // color = mix(color, video, clamp(filter5x5(uFilter5x5, uVideo, uv, uResolution), 0.0, 1.0));
     // vec4 color = mix(renderTarget, video, clamp(filter5x5(uFilter5x5, uVideo, uv, uResolution), 0.0, 1.0));
 
