@@ -1,0 +1,12 @@
+credits for assets :
+
+loader : http://www.ajaxload.info/
+
+earth : http://csclab.murraystate.edu/bob.pilgrim/575/code/the_earth/the_earth/
+earth2 : http://www.holtz.org/Library/Images/Slideshows/Gallery/Maps/
+earth3 : http://www.reddit.com/r/MapPorn/comments/10r9t7/map_of_the_earth_with_mercator_projection_using_a/
+background : http://www.spacebanter.com/showthread.php?t=138115
+fulldome : http://thefulldomeblog.com/page/2/
+
+texture1 : http://www.cgtextures.com/
+texture2 : http://www.cgtextures.com/
