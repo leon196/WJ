@@ -5,6 +5,11 @@ namespace WJ
 {
 	public class RenderTexture : MonoBehaviour
 	{
+		float _scale = 1f;
+		public float Scale { get; set; }
+		int width = 256;
+		int height = 256;
+
 		Camera cameraRender;
 		Material materialRender;
 
@@ -26,12 +31,12 @@ namespace WJ
 
 		void Start ()
 		{
+			width = (int)(Screen.width * Scale);
+			height = (int)(Screen.height * Scale);
+
 			currentTexture = 0;
 			textures = new UnityEngine.RenderTexture[2];
-			textures[0] = new UnityEngine.RenderTexture(Screen.width, Screen.height, 16, RenderTextureFormat.ARGB32);
-			textures[1] = new UnityEngine.RenderTexture(Screen.width, Screen.height, 16, RenderTextureFormat.ARGB32);
-			textures[0].Create();
-			textures[1].Create();
+			ResizeTextures();
 
 			cameraRender = GetComponent<Camera>();
 			materialRender = GetComponentInChildren<Renderer>().material;
@@ -43,6 +48,7 @@ namespace WJ
 			NextTexture();
 			cameraRender.targetTexture = GetCurrentTexture();
 			materialEffect.mainTexture = GetCurrentTexture();
+
 		}
 
 		void Update ()
@@ -51,6 +57,20 @@ namespace WJ
 			NextTexture();
 			cameraRender.targetTexture = GetCurrentTexture();
 			materialEffect.mainTexture = GetCurrentTexture();
+		}
+
+		public void ResizeTextures ()
+		{
+			for (int i = 0; i < textures.Length; ++i)
+			{
+				if (textures[i])
+				{
+					textures[i].Release();
+				}
+				textures[i] = new UnityEngine.RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
+				textures[i].Create();
+				textures[i].filterMode = FilterMode.Point;
+			}
 		}
 	}
 }

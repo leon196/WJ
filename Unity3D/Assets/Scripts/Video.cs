@@ -3,14 +3,31 @@ using System.Collections;
 
 namespace WJ
 {
-	public class Video : MonoBehaviour
+	public class Video : Behaviour
 	{
-		MovieTexture video;
-		void Start () 
+		Material materialEffect;
+
+		void Start ()
 		{
-			video = GetComponent<Renderer>().sharedMaterial.GetTexture("_SamplerVideo") as MovieTexture;
-			video.loop = true;
-			video.Play();
+			delayBeforeNewObject = 5f;
+			materialEffect = GetComponent<Renderer>().material;
+			objects = Resources.FindObjectsOfTypeAll(typeof(MovieTexture));
+			Debug.Log(objects.Length);
+		}
+
+		public void NextVideo ()
+		{
+			NextObject();
+			MovieTexture video = GetCurrentVideo();
+            video.loop = true;
+            video.Play();
+			materialEffect.SetTexture("_SamplerVideo", GetCurrentVideo());
+			materialEffect.SetFloat("_RoundVideo", round);
+		}
+
+		public MovieTexture GetCurrentVideo ()
+		{
+			return GetCurrentObject() as MovieTexture;
 		}
 	}
 }
