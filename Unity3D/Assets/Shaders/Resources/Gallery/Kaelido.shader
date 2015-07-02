@@ -17,6 +17,9 @@
 	    	#include "UnityCG.cginc"   
 	    	#define PI 3.141592653589
 			#define PI2 6.283185307179
+			#define PIHalf 1.570796327
+			#define RADTier 2.094395102
+			#define RAD2Tier 4.188790205
 
 		    struct v2f {
 		        float4 pos : SV_POSITION;
@@ -45,14 +48,14 @@
 		    	uv.x *= _ScreenParams.x / _ScreenParams.y;
 
 			    float dist = length(uv);
-			    float angle = atan2(uv.y, uv.x);
+			    float angle = atan2(uv.y, uv.x) - PIHalf;
 
-			    float a = abs(angle) / PI * 4.0;
+			    float a = abs(angle) / PI * 3.0;
 			    a += _TimeElapsed * 0.2 * lerp(-1.0, 1.0,  fmod(floor(a), 2.0));
 			    float aMod = fmod(abs(a), 1.0);
 			    a = lerp(1.0 - aMod, aMod, fmod(floor(abs(a)), 2.0));
 
-			    float d = dist * 4.0;
+			    float d = dist * 2.0;
 			    d += _TimeElapsed * 0.4 * lerp(-1.0, 1.0, fmod(floor(abs(d)), 2.0));
 			    float dMod = fmod(abs(d), 1.0);
 			    d = lerp(1.0 - dMod, dMod, fmod(floor(abs(d)), 2.0));

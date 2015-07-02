@@ -8,8 +8,8 @@ namespace WJ
 		Camera cameraRender;
 		Material materialRender;
 
-		Camera cameraDraw;
-		Material materialDraw;
+		Camera cameraEffect;
+		Material materialEffect;
 
 		int currentTexture;
 		UnityEngine.RenderTexture[] textures;
@@ -36,13 +36,13 @@ namespace WJ
 			cameraRender = GetComponent<Camera>();
 			materialRender = GetComponentInChildren<Renderer>().material;
 
-			cameraDraw = Camera.main;
-			materialDraw = cameraDraw.GetComponentInChildren<Renderer>().material;
+			cameraEffect = Camera.main;
+			materialEffect = cameraEffect.GetComponentInChildren<Renderer>().material;
 
 			materialRender.SetTexture("_SamplerRenderTarget", GetCurrentTexture());
 			NextTexture();
 			cameraRender.targetTexture = GetCurrentTexture();
-			materialDraw.mainTexture = GetCurrentTexture();
+			materialEffect.mainTexture = GetCurrentTexture();
 		}
 
 		void Update ()
@@ -50,7 +50,7 @@ namespace WJ
 			materialRender.SetTexture("_SamplerRenderTarget", GetCurrentTexture());
 			NextTexture();
 			cameraRender.targetTexture = GetCurrentTexture();
-			materialDraw.mainTexture = GetCurrentTexture();
+			materialEffect.mainTexture = GetCurrentTexture();
 		}
 	}
 }
