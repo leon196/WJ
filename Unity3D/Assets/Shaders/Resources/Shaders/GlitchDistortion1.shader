@@ -1,9 +1,5 @@
-Shader "Custom/GlitchColorDirection" {
+Shader "Custom/GlitchDistortion1" {
 	Properties {
-		_SamplerVideo ("Video", 2D) = "white" {}
-		_SamplerRenderTarget ("Render Texture", 2D) = "white" {}
-		_RoundEffect ("Effect Round", Float) = 0
-		_RoundVideo ("Video Round", Float) = 0
 	}
 	SubShader {
    		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
@@ -38,6 +34,8 @@ Shader "Custom/GlitchColorDirection" {
 			float _TimeElapsed;
 	    	float _RoundEffect;
 	    	float _RoundVideo;
+	    	float _RatioBufferTreshold;
+	    	float _RatioRandom1;
 
 			v2f vert (appdata_full v)
 			{
@@ -53,19 +51,14 @@ Shader "Custom/GlitchColorDirection" {
 		    {
 		    	float2 uv = i.screenUV.xy / i.screenUV.w;
 
-		    	float seed = luminance(tex2D(_SamplerRenderTarget, uv).rgb);
-		    	float random = cnoise(float2(seed * 10.0, 0.0));
+		    	float random = cnoise(uv * (1.0 + 2.0 * _RatioRandom1) + float2(_TimeElapsed * 0.01, 0.0));
 		    	float angle = random * PI2;
-		    	float2 offset = float2(cos(angle), sin(angle)) * 0.01;
+		    	float2 offset = float2(cos(angle), sin(angle)) * 0.003;
 
 			    half4 video = tex2D(_SamplerVideo, uv);
 			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv + offset);
 
-
-			    float fade = 1.0;//0.99;
-			    half4 fadeOut = float4(fade, fade, fade, 1.0);
-
-    			half4 color = lerp(renderTarget * fadeOut, video, step(0.5, distance(video.rgb, renderTarget.rgb)));
+    			half4 color = lerp(renderTarget, video, step(0.75, distance(video.rgb, renderTarget.rgb)));
 
 		        return color;
 		    }

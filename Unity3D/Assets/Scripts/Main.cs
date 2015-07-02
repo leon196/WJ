@@ -6,7 +6,6 @@ namespace WJ
 	public class Main : MonoBehaviour
 	{
 		public bool cycleMode = false;
-		public int pixelSize = 1;
 
 		Shader shader;
 		RenderTexture renderTexture;
@@ -17,30 +16,58 @@ namespace WJ
 			shader = GetComponent<Shader>();
 			renderTexture = GetComponentInChildren<RenderTexture>();
 			video = GetComponentInChildren<Video>();
+		}
 
-			renderTexture.Scale = 1f / (float)pixelSize;
+		void Resize (float pixelSize)
+		{
+			if (renderTexture.pixelSize != pixelSize)
+			{
+				renderTexture.pixelSize = pixelSize;
+				renderTexture.Resize();
+			}
 		}
 
 		void Update ()
 		{
-			shader.UpdateShaderUniforms();
+			UnityEngine.Shader.SetGlobalFloat("_TimeElapsed", Time.time);
 
 			if (cycleMode)
 			{
 				if (shader.IsItTimeToChange())
 				{
 					shader.NextShader();
-
-					if (shader.GetCurrentShader().name == "GlitchColotDirection")
-					{
-
-					}
+					CheckSpecials();
 				}
 
 				if (video.IsItTimeToChange())
 				{
 					video.NextVideo();
 				}
+			}
+
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				CheckSpecials();
+			}
+
+			if (Input.GetKeyDown(KeyCode.RightArrow))
+			{
+				shader.NextShader();
+				CheckSpecials();
+			}
+		}
+
+		void CheckSpecials ()
+		{
+			if (shader.GetCurrentShader().name == "Custom/GlitchColorDirection"
+				|| shader.GetCurrentShader().name == "Custom/GlitchFatPixel"
+				|| shader.GetCurrentShader().name == "Custom/GlitchDistortion2")
+			{
+				Resize(2f);
+			}
+			else 
+			{
+				Resize(1f);
 			}
 		}
 	}

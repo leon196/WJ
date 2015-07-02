@@ -1,7 +1,5 @@
 ﻿Shader "Custom/Kaelido" {
 	Properties {
-		_Color ("Color", Color) = (1,1,1,1)
-		_MainTex ("Texture (RGB)", 2D) = "white" {}
 	}
 	SubShader {
    		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
@@ -27,16 +25,16 @@
                 float4 screenUV : TEXCOORD1;
 		    };   
 
-			sampler2D _MainTex;
-	    	float4 _MainTex_ST; 
-			fixed4 _Color;
+			sampler2D _SamplerVideo;
+			sampler2D _SamplerRenderTarget;
+	    	float4 _SamplerVideo_ST; 
 			float _TimeElapsed;
 
 			v2f vert (appdata_full v)
 			{
 		        v2f o;
 		        o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-		        o.uv = TRANSFORM_TEX (v.texcoord, _MainTex);
+		        o.uv = TRANSFORM_TEX (v.texcoord, _SamplerVideo);
 		        o.screenUV = ComputeScreenPos(o.pos);
 		        return o;
 
@@ -55,14 +53,14 @@
 			    float aMod = fmod(abs(a), 1.0);
 			    a = lerp(1.0 - aMod, aMod, fmod(floor(abs(a)), 2.0));
 
-			    float d = dist * 2.0;
+			    float d = log(dist);
 			    d += _TimeElapsed * 0.4 * lerp(-1.0, 1.0, fmod(floor(abs(d)), 2.0));
 			    float dMod = fmod(abs(d), 1.0);
 			    d = lerp(1.0 - dMod, dMod, fmod(floor(abs(d)), 2.0));
 
 			    uv = fmod(float2(a, d), 1.0);
 
-		        return tex2D(_MainTex, uv);
+		        return tex2D(_SamplerVideo, uv);
 		    }
 			ENDCG
 		} 

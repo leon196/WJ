@@ -1,9 +1,5 @@
 Shader "Custom/GlitchSolar" {
 	Properties {
-		_SamplerVideo ("Video", 2D) = "white" {}
-		_SamplerRenderTarget ("Render Texture", 2D) = "white" {}
-		_RoundEffect ("Effect Round", Float) = 0
-		_RoundVideo ("Video Round", Float) = 0
 	}
 	SubShader {
    		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
@@ -33,6 +29,7 @@ Shader "Custom/GlitchSolar" {
 			float _TimeElapsed;
 	    	float _RoundEffect;
 	    	float _RoundVideo;
+	    	float _RatioBufferTreshold;
 
 			v2f vert (appdata_full v)
 			{
@@ -62,7 +59,7 @@ Shader "Custom/GlitchSolar" {
 			    float fade = 0.97;
 			    half4 fadeOut = float4(fade, fade, fade, 1.0);
 
-    			half4 color = lerp(renderTarget * fadeOut, video, step(0.5, distance(video.rgb, renderTarget.rgb)));
+    			half4 color = lerp(renderTarget * fadeOut, video, step(_RatioBufferTreshold, distance(video.rgb, renderTarget.rgb)));
 
 		        return color;
 		    }

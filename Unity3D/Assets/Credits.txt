@@ -2,3 +2,5 @@
 credits :
 
 https://github.com/ashima/webgl-noise
+
+http://stackoverflow.com/questions/12964279/whats-the-origin-of-this-glsl-rand-one-liner

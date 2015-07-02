@@ -5,10 +5,7 @@ namespace WJ
 {
 	public class RenderTexture : MonoBehaviour
 	{
-		float _scale = 1f;
-		public float Scale { get; set; }
-		int width = 256;
-		int height = 256;
+		public float pixelSize = 1f;
 
 		Camera cameraRender;
 		Material materialRender;
@@ -31,12 +28,9 @@ namespace WJ
 
 		void Start ()
 		{
-			width = (int)(Screen.width * Scale);
-			height = (int)(Screen.height * Scale);
-
 			currentTexture = 0;
 			textures = new UnityEngine.RenderTexture[2];
-			ResizeTextures();
+			Resize();
 
 			cameraRender = GetComponent<Camera>();
 			materialRender = GetComponentInChildren<Renderer>().material;
@@ -44,7 +38,7 @@ namespace WJ
 			cameraEffect = Camera.main;
 			materialEffect = cameraEffect.GetComponentInChildren<Renderer>().material;
 
-			materialRender.SetTexture("_SamplerRenderTarget", GetCurrentTexture());
+			UnityEngine.Shader.SetGlobalTexture("_SamplerRenderTarget", GetCurrentTexture());
 			NextTexture();
 			cameraRender.targetTexture = GetCurrentTexture();
 			materialEffect.mainTexture = GetCurrentTexture();
@@ -53,14 +47,17 @@ namespace WJ
 
 		void Update ()
 		{
-			materialRender.SetTexture("_SamplerRenderTarget", GetCurrentTexture());
+			UnityEngine.Shader.SetGlobalTexture("_SamplerRenderTarget", GetCurrentTexture());
 			NextTexture();
 			cameraRender.targetTexture = GetCurrentTexture();
 			materialEffect.mainTexture = GetCurrentTexture();
 		}
 
-		public void ResizeTextures ()
+		public void Resize ()
 		{
+			int width = (int)(Screen.width * (1f / pixelSize));
+			int height = (int)(Screen.height * (1f / pixelSize));
+
 			for (int i = 0; i < textures.Length; ++i)
 			{
 				if (textures[i])

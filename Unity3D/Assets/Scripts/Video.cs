@@ -12,17 +12,22 @@ namespace WJ
 			delayBeforeNewObject = 5f;
 			materialEffect = GetComponent<Renderer>().material;
 			objects = Resources.FindObjectsOfTypeAll(typeof(MovieTexture));
-			Debug.Log(objects.Length);
+
+			MovieTexture video = GetCurrentVideo();
+            video.loop = true;
+            video.Play();
 		}
 
 		public void NextVideo ()
 		{
 			NextObject();
+
 			MovieTexture video = GetCurrentVideo();
             video.loop = true;
             video.Play();
-			materialEffect.SetTexture("_SamplerVideo", GetCurrentVideo());
-			materialEffect.SetFloat("_RoundVideo", round);
+
+			UnityEngine.Shader.SetGlobalTexture("_SamplerVideo", GetCurrentVideo());
+			UnityEngine.Shader.SetGlobalFloat("_RoundVideo", round);
 		}
 
 		public MovieTexture GetCurrentVideo ()

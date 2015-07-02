@@ -52,6 +52,12 @@ float reflectance(float3 a, float3 b)
 	return dot(normalize(a), normalize(b)) * 0.5 + 0.5;
 }
 
+// http://stackoverflow.com/questions/12964279/whats-the-origin-of-this-glsl-rand-one-liner
+float rand(float2 co)
+{
+  return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453);
+}
+
 // From Anton Roy -> https://www.shadertoy.com/view/Xs23DG
 // float4 filter5x5 (float filter[25], sampler2D bitmap, float2 uv, float2 dimension)
 // {
