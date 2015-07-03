@@ -57,9 +57,9 @@ namespace WJ
 			if (shader.GetCurrentShader().name == "Custom/GlitchColorDirection"
 				|| shader.GetCurrentShader().name == "Custom/GlitchFatPixel"
 				|| shader.GetCurrentShader().name == "Custom/GlitchDistortion2"
-				|| shader.GetCurrentShader().name == "Custom/GlitchDistortion3")
+				|| shader.GetCurrentShader().name == "Custom/Rain")
 			{
-				Resize(2f);
+				Resize(4f);
 			}
 			else 
 			{

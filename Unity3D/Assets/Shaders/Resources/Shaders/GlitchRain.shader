@@ -1,4 +1,4 @@
-Shader "Custom/GlitchDistortion3" {
+Shader "Custom/GlitchRain" {
 	Properties {
 	}
 	SubShader {
