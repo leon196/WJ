@@ -10,12 +10,11 @@ Shader "Custom/GlitchFatPixel" {
 			LOD 200
 			
 			CGPROGRAM
+			#pragma target 3.0
+
 		    #pragma vertex vert
 		    #pragma fragment frag   
 	    	#include "UnityCG.cginc"   
-	    	#include "Assets/Shaders/Utils.cginc"   
-			// https://github.com/ashima/webgl-noise
-	    	#include "Assets/Shaders/ClassicNoise2D.cginc"   
 	    	#define PI 3.141592653589
 			#define PI2 6.283185307179
 
@@ -53,22 +52,25 @@ Shader "Custom/GlitchFatPixel" {
 			    float minRange = 3.0;
 			    float maxRange = 8.0;
 
-			    float range = luminance(tex2D(_SamplerVideo, uv));
+
+			    half4 c = tex2D(_SamplerVideo, uv);
+			    float range = (c.r + c.g + c.g) / 3.0;
 
 			    float details = minRange + floor(range * maxRange);
 			    details = pow(2.0, details);
-			    uv = pixelize(uv, details);
+			    uv = floor(uv * details) / details;
+
 
 			    float2 offset = float2(-1.0, 0.0) * 0.002;
 
 			    half4 video = tex2D(_SamplerVideo, uv);
-			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv + offset);
+			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv);// + offset);
 
 
-			    float fade = 0.99;
-			    half4 fadeOut = float4(fade, fade, fade, 1.0);
+			    // float fade = 0.99;
+			    // half4 fadeOut = float4(fade, fade, fade, 1.0);
 
-    			half4 color = lerp(renderTarget * fadeOut, video, step(_RatioBufferTreshold, distance(video.rgb, renderTarget.rgb)));
+    			half4 color = lerp(renderTarget, video, step(_RatioBufferTreshold, distance(video.rgb, renderTarget.rgb)));
 
 		        return color;
 		    }
