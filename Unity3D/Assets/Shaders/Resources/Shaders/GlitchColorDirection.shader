@@ -53,7 +53,7 @@ Shader "Custom/GlitchColorDirection" {
 		    	float seed = luminance(tex2D(_SamplerRenderTarget, uv).rgb);
 		    	// float random = cnoise(float2(seed, 0.0));
 		    	float angle = seed * PI2;
-		    	float2 offset = float2(cos(angle), sin(angle)) * 0.005;
+		    	float2 offset = float2(cos(angle), sin(angle)) * 0.003;
 
 			    half4 video = tex2D(_SamplerVideo, uv);
 			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv + offset);

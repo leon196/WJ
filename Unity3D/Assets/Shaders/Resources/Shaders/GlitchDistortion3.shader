@@ -1,4 +1,4 @@
-Shader "Custom/GlitchDistortion2" {
+Shader "Custom/GlitchDistortion3" {
 	Properties {
 	}
 	SubShader {
@@ -10,7 +10,6 @@ Shader "Custom/GlitchDistortion2" {
 			LOD 200
 			
 			CGPROGRAM
-			#pragma target 3.0
 		    #pragma vertex vert
 		    #pragma fragment frag   
 	    	#include "UnityCG.cginc"   
@@ -52,22 +51,22 @@ Shader "Custom/GlitchDistortion2" {
 		    {
 		    	float2 uv = i.screenUV.xy / i.screenUV.w;
 
-		    	float random = rand(uv + float2(_TimeElapsed * 0.0001, 0.0));
-		    	float angle = random * PI2;
-		    	float2 offset = float2(cos(angle), sin(angle)) * 0.001;
+		    	float random = 0.5 + 0.5 * rand(uv.xx + float2(_TimeElapsed * 0.0001, 0.0));
+		    	float2 offset = float2(0.0, 1.0) * random * 0.05;
 
-    			float2 p = uv * 2.0 - 1.0;
-    			p.x *= _ScreenParams.x / _ScreenParams.y;
+    			// float2 p = uv * 2.0 - 1.0;
+    			// p.x *= _ScreenParams.x / _ScreenParams.y;
 
-			    float dist = length(p);
-			    angle = atan2(p.y, p.x);
-			    offset += float2(cos(angle), sin(angle)) * dist * 0.01;
-			    // offset *= lerp(-1.0, 1.0, fmod(floor(_RoundEffect), 2.0));
+			    // float dist = length(p);
+			    // angle = atan2(p.y, p.x);
+			    // offset += float2(cos(angle), sin(angle)) * dist * 0.01;
 
 			    half4 video = tex2D(_SamplerVideo, uv);
-			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv - offset);
+			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv + offset);
 
     			half4 color = lerp(renderTarget, video, step(_RatioBufferTreshold, distance(video.rgb, renderTarget.rgb)));
+
+    			color.rgb *= (0.5 + 0.5 * random);
 
 		        return color;
 		    }

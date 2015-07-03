@@ -50,10 +50,17 @@ Shader "Custom/GlitchDistortion1" {
 		    half4 frag (v2f i) : COLOR
 		    {
 		    	float2 uv = i.screenUV.xy / i.screenUV.w;
+		    	
+    			float2 p = uv * 2.0 - 1.0;
+    			p.x *= _ScreenParams.x / _ScreenParams.y;
 
-		    	float random = cnoise(uv * (1.0 + 2.0 * _RatioRandom1) + float2(_TimeElapsed * 0.01, 0.0));
-		    	float angle = random * PI2;
-		    	float2 offset = float2(cos(angle), sin(angle)) * 0.003;
+			    float dist = length(p);
+			    float angle = atan2(p.y, p.x);
+			    float2 offset = float2(cos(angle), sin(angle)) * dist * 0.01;
+
+		    	// float random = cnoise(uv * (1.0 + 2.0 * _RatioRandom1) + float2(_TimeElapsed * 0.01, 0.0));
+		    	// float angle = random * PI2;
+		    	// float2 offset = float2(cos(angle), sin(angle)) * 0.003;
 
 			    half4 video = tex2D(_SamplerVideo, uv);
 			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv + offset);

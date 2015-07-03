@@ -5,7 +5,7 @@ namespace WJ
 {
 	public class Shader : Behaviour
 	{
-		Material materialEffect;
+		public Material materialEffect;
 
 		void Start ()
 		{
@@ -14,8 +14,8 @@ namespace WJ
 			objects = Resources.LoadAll("Shaders");
 			materialEffect = GetComponentInChildren<Video>().GetComponent<Renderer>().material;
 
-	    	UnityEngine.Shader.SetGlobalVector("_Eye", new Vector3(0f, 0f, -1.5f));
-	    	UnityEngine.Shader.SetGlobalVector("_Front", new Vector3(0f, 0f, 1f));
+	    	UnityEngine.Shader.SetGlobalVector("_Eye", new Vector3(0f, 0f, -2f));
+	    	UnityEngine.Shader.SetGlobalVector("_Front", new Vector3(0f, 0f, 2.0f));
 	    	UnityEngine.Shader.SetGlobalVector("_Up", new Vector3(0f, 1f, 0f));
 	    	UnityEngine.Shader.SetGlobalVector("_Right", new Vector3(1f, 0f, 0f));
 
@@ -41,7 +41,7 @@ namespace WJ
 			NextObject();
 			materialEffect.shader = GetCurrentObject() as UnityEngine.Shader;
 			
-			UnityEngine.Shader.SetGlobalFloat("_RoundShader", round);
+			UnityEngine.Shader.SetGlobalFloat("_RoundEffect", round);
 			UnityEngine.Shader.SetGlobalFloat("_RatioBufferTreshold", 0.4f + 0.2f * Random.Range(0f, 1f));
 			UnityEngine.Shader.SetGlobalFloat("_RatioRandom1", Random.Range(0f, 1f));
 		}

@@ -38,16 +38,6 @@ namespace WJ
 					shader.NextShader();
 					CheckSpecials();
 				}
-
-				if (video.IsItTimeToChange())
-				{
-					video.NextVideo();
-				}
-			}
-
-			if (Input.GetKeyDown(KeyCode.Space))
-			{
-				CheckSpecials();
 			}
 
 			if (Input.GetKeyDown(KeyCode.RightArrow))
@@ -55,13 +45,19 @@ namespace WJ
 				shader.NextShader();
 				CheckSpecials();
 			}
+
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+				Application.Quit();
+			}
 		}
 
 		void CheckSpecials ()
 		{
 			if (shader.GetCurrentShader().name == "Custom/GlitchColorDirection"
 				|| shader.GetCurrentShader().name == "Custom/GlitchFatPixel"
-				|| shader.GetCurrentShader().name == "Custom/GlitchDistortion2")
+				|| shader.GetCurrentShader().name == "Custom/GlitchDistortion2"
+				|| shader.GetCurrentShader().name == "Custom/GlitchDistortion3")
 			{
 				Resize(2f);
 			}
