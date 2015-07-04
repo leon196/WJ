@@ -30,6 +30,7 @@ namespace WJ
 		void Update ()
 		{
 			UnityEngine.Shader.SetGlobalFloat("_TimeElapsed", Time.time);
+			UnityEngine.Shader.SetGlobalFloat("_MouseX", Input.mousePosition.x / Screen.width);
 
 			if (cycleMode)
 			{
@@ -43,7 +44,18 @@ namespace WJ
 			if (Input.GetKeyDown(KeyCode.RightArrow))
 			{
 				shader.NextShader();
-				CheckSpecials();
+				// CheckSpecials();
+			}
+
+			if (Input.GetKeyDown(KeyCode.LeftArrow))
+			{
+				shader.PreviousShader();
+				// CheckSpecials();
+			}
+
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				video.Toggle();
 			}
 
 			if (Input.GetKeyDown(KeyCode.Escape))
@@ -57,7 +69,7 @@ namespace WJ
 			if (shader.GetCurrentShader().name == "Custom/GlitchColorDirection"
 				|| shader.GetCurrentShader().name == "Custom/GlitchFatPixel"
 				|| shader.GetCurrentShader().name == "Custom/GlitchDistortion2"
-				|| shader.GetCurrentShader().name == "Custom/Rain")
+				|| shader.GetCurrentShader().name == "Custom/GlitchRain")
 			{
 				Resize(4f);
 			}

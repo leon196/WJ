@@ -9,11 +9,29 @@ namespace WJ
 
 		void Start ()
 		{
-			delayBeforeNewObject = 5f;
+			delayBeforeNewObject = 10f;
 			
 			objects = Resources.LoadAll("Shaders");
 			materialEffect = GetComponentInChildren<Video>().GetComponent<Renderer>().material;
 
+			UpdateShader();
+			UpdateRaymarching();
+		}
+
+		public UnityEngine.Shader GetCurrentShader ()
+		{
+			return GetCurrentObject() as UnityEngine.Shader;
+		}
+
+		public void UpdateShader ()
+		{
+			UnityEngine.Shader.SetGlobalFloat("_RoundEffect", round);
+			UnityEngine.Shader.SetGlobalFloat("_RatioBufferTreshold", 0.4f + 0.2f * Random.Range(0f, 1f));
+			UnityEngine.Shader.SetGlobalFloat("_RatioRandom1", Random.Range(0f, 1f));
+		}
+
+		public void UpdateRaymarching ()
+		{
 	    	UnityEngine.Shader.SetGlobalVector("_Eye", new Vector3(0f, 0f, -2f));
 	    	UnityEngine.Shader.SetGlobalVector("_Front", new Vector3(0f, 0f, 2.0f));
 	    	UnityEngine.Shader.SetGlobalVector("_Up", new Vector3(0f, 1f, 0f));
@@ -31,14 +49,16 @@ namespace WJ
 	    	UnityEngine.Shader.SetGlobalColor("_GlowColor", new Color(1f, 1f, 1f, 1.0f));
 		}
 
-		public UnityEngine.Shader GetCurrentShader ()
-		{
-			return GetCurrentObject() as UnityEngine.Shader;
-		}
-
 		public void NextShader ()
 		{
 			NextObject();
+			materialEffect.shader = GetCurrentObject() as UnityEngine.Shader;
+			UpdateShader();
+		}
+
+		public void PreviousShader ()
+		{
+			PreviousObject();
 			materialEffect.shader = GetCurrentObject() as UnityEngine.Shader;
 			
 			UnityEngine.Shader.SetGlobalFloat("_RoundEffect", round);

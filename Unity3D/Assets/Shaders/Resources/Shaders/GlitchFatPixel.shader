@@ -59,10 +59,10 @@ Shader "Custom/GlitchFatPixel" {
 			    details = pow(2.0, details);
 			    uv = pixelize(uv, details);
 
-			    float2 offset = float2(-1.0, 0.0) * 0.002;
+			    // float2 offset = float2(-1.0, 0.0) * 0.001;
 
 			    half4 video = tex2D(_SamplerVideo, uv);
-			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv + offset);
+			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv);// + offset);
 
 
 			    float fade = 0.99;

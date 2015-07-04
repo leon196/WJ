@@ -52,7 +52,7 @@ Shader "Custom/GlitchRain" {
 		    	float2 uv = i.screenUV.xy / i.screenUV.w;
 
 		    	float random = 0.5 + 0.5 * rand(uv.xx + float2(_TimeElapsed * 0.0001, 0.0));
-		    	float2 offset = float2(0.0, 1.0) * random * 0.05;
+		    	float2 offset = float2(0.0, 1.0) * random * 0.01;
 
     			// float2 p = uv * 2.0 - 1.0;
     			// p.x *= _ScreenParams.x / _ScreenParams.y;
@@ -66,7 +66,7 @@ Shader "Custom/GlitchRain" {
 
     			half4 color = lerp(renderTarget, video, step(_RatioBufferTreshold, distance(video.rgb, renderTarget.rgb)));
 
-    			color.rgb *= (0.5 + 0.5 * random);
+    			// color.rgb *= (0.5 + 0.5 * random);
 
 		        return color;
 		    }

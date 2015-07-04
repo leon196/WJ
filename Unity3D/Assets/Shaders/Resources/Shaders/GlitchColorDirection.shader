@@ -14,8 +14,10 @@ Shader "Custom/GlitchColorDirection" {
 		    #pragma fragment frag   
 	    	#include "UnityCG.cginc"   
 	    	#include "Assets/Shaders/Utils.cginc"   
+
 			// https://github.com/ashima/webgl-noise
 	    	#include "Assets/Shaders/ClassicNoise2D.cginc"   
+	    	
 	    	#define PI 3.141592653589
 			#define PI2 6.283185307179
 

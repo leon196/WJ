@@ -32,6 +32,12 @@ namespace WJ
 			timeSinceNewObject = Time.time;
 		}
 
+		public void PreviousObject ()
+		{
+			currentObject = (currentObject - 1 + objects.Length) % objects.Length;
+			timeSinceNewObject = Time.time;
+		}
+
 		public Object GetCurrentObject ()
 		{
 			return objects[currentObject];
