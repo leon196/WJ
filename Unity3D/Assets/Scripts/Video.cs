@@ -14,8 +14,6 @@ namespace WJ
 
 			var url = "file://" + Application.dataPath + "/StreamingAssets/vh1.ogg";
 
-			Debug.Log(url);
-
 			var www = new WWW(url);
 
 			movieTexture = (MovieTexture)www.movie;

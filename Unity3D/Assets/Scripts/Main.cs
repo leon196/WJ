@@ -20,9 +20,9 @@ namespace WJ
 
 		void Resize (float pixelSize)
 		{
-			if (renderTexture.pixelSize != pixelSize)
+			if (renderTexture.PixelSize != pixelSize)
 			{
-				renderTexture.pixelSize = pixelSize;
+				renderTexture.PixelSize = pixelSize;
 				renderTexture.Resize();
 			}
 		}
