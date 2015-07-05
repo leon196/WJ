@@ -33,7 +33,7 @@ namespace WJ
 		public void UpdateRaymarching ()
 		{
 	    	UnityEngine.Shader.SetGlobalVector("_Eye", new Vector3(0f, 0f, -2f));
-	    	UnityEngine.Shader.SetGlobalVector("_Front", new Vector3(0f, 0f, 2.0f));
+	    	UnityEngine.Shader.SetGlobalVector("_Front", new Vector3(0f, 0f, 1.0f));
 	    	UnityEngine.Shader.SetGlobalVector("_Up", new Vector3(0f, 1f, 0f));
 	    	UnityEngine.Shader.SetGlobalVector("_Right", new Vector3(1f, 0f, 0f));
 
@@ -42,7 +42,7 @@ namespace WJ
 			
 	    	UnityEngine.Shader.SetGlobalFloat("_Repeat", 0f);
 	    	UnityEngine.Shader.SetGlobalFloat("_DisplacementScale", 0.2f);
-	    	UnityEngine.Shader.SetGlobalFloat("_PlanetRadius", 0.4f);
+	    	UnityEngine.Shader.SetGlobalFloat("_PlanetRadius", 0.1f);
 
 	    	UnityEngine.Shader.SetGlobalColor("_SkyColor", new Color(0.3f, 0.3f, 0.3f, 1.0f));
 	    	UnityEngine.Shader.SetGlobalColor("_ShadowColor", new Color(0f, 0f, 0f, 1.0f));

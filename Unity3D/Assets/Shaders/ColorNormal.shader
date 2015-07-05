@@ -24,12 +24,15 @@
       	float _TimeElapsed;
       	float _MouseX;
 
+        float _SamplesTotal;
+        float _SamplesElapsed;
+
       	void vert (inout appdata_full v, out Input o)
       	{
           	UNITY_INITIALIZE_OUTPUT(Input,o);
 
-          	float3 seed = float3(0.0, length(v.normal), length(v.vertex) - _TimeElapsed);
-          	float3 offset = v.normal * snoise(seed);//* _MouseX;
+          	float3 seed = float3(0.0, length(v.normal), length(v.vertex) - _TimeElapsed);//_SamplesElapsed);
+          	float3 offset = v.normal * snoise(seed) * _SamplesTotal;//* _MouseX;
           	float3 origin = v.vertex;
           	v.vertex.xyz += offset;
           	o.pos = length(mul (UNITY_MATRIX_MV, v.vertex).xyz);

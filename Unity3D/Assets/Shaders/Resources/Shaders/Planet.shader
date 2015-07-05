@@ -59,6 +59,8 @@
 			half4 _ShadowColor;
 			half4 _GlowColor;
 
+			float _SamplesTotal;
+
 			v2f vert (appdata_full v)
 			{
 		        v2f o;
@@ -90,6 +92,9 @@
 			        p = rotateX(p, _TimeElapsed * 0.5);
 			        p = rotateY(p, _TimeElapsed * 0.5);
 
+			        float g = 2.0;// + _SamplesTotal;//sin(_TimeElapsed) * 0.5 + 0.5;
+			        //p = fmod(p, float3(g, g, g)) - g / 2.0;
+
 			        // Sphere _V
 			        float x = atan2(p.z, p.x) / PI / 2.0 + 0.5;
 			        float y = acos(p.y / length(p)) / PI;
@@ -111,7 +116,9 @@
 			        color = tex2D(_SamplerVideo, float2(x, y)).rgb;
 
 			        // Displacement height from luminance
-			        p -= normalize(p) * _PlanetRadius * (color.r + color.g + color.b) / 3.0;
+			        p -= normalize(p) * (0.6 + _SamplesTotal * 0.2 * (color.r + color.g + color.b) / 3.0);
+			        //p -= normalize(p) * _PlanetRadius * (color.r + color.g + color.b) / 3.0;
+
 
 			        // Distance to Sphere
 			        float d = substraction(sphere(_Eye - originP, 0.1), sphere(p, _PlanetRadius));

@@ -14,6 +14,10 @@ namespace WJ
 
 		void Start ()
 		{
+	        foreach (string device in Microphone.devices) {
+	            Debug.Log("Name: " + device);
+	        }
+
 			samplesElapsed = 0f;
 			const int length = 1024;
 			samples = new float[length];
@@ -25,11 +29,16 @@ namespace WJ
 
 		// public void LoadAudioClip ()
 		// {		
-			var url = "file://" + Application.dataPath + "/StreamingAssets/CMYK - Moomin Loop No 1.ogg";
+			var url = "file://" + Application.dataPath + "/StreamingAssets/DJ Set 2015/249508_Dancefloor_Heaven_Al_Ferox_Remix.wav";
 			var www = new WWW(url);
 			audioClip = www.audioClip;
 			// audioSource = gameObject.AddComponent<AudioSource>();
-			audioSource.clip = audioClip;
+			// audioSource.clip = audioClip;
+
+	        if (Microphone.devices.Length > 0)
+	        {
+	        	audioSource.clip = Microphone.Start(Microphone.devices[0], true, 10, 44100);
+	        }
 
 		}
 
