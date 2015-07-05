@@ -1,4 +1,4 @@
-Shader "Custom/Glitch" {
+Shader "Custom/Glitch2" {
 	Properties {
 	}
 	SubShader {
@@ -38,6 +38,7 @@ Shader "Custom/Glitch" {
 	    	float _RatioBufferTreshold;
 
 	    	float _SamplesTotal;
+	    	float _SamplesElapsed;
 
 			v2f vert (appdata_full v)
 			{
@@ -56,33 +57,32 @@ Shader "Custom/Glitch" {
 		    	float2 p = uv * 2.0 - 1.0;
 		    	p.x *= _ScreenParams.x / _ScreenParams.y;
 
-		    	float dist = length(p);
+		    	float dist = length(p.xy);
 		    	float angle = atan2(p.y, p.x);
 
 		    	float lum = luminance(tex2D(_SamplerRenderTarget, uv));
-		    	lum = clamp(lum, 0.1, 1.0);
-		    	// angle = ;
-		    	// tex2D(_SamplerSound, float2(angle / PI * 0.5 + 0.5, 0.0)).r
 
-		    	float2 offset = float2(cos(angle), sin(angle)) * dist * 0.05 * _SamplesTotal * lum;
 
-		    	float sample = clamp(_SamplesTotal, 0.1, 0.75);
+		    	// angle += _TimeElapsed;
 
-		    	// float seed = luminance(tex2D(_SamplerRenderTarget, uv).rgb);
-		    	float random = rand(uv);
-		    	angle = random * PI2;
-		    	offset += float2(cos(angle), sin(angle)) * 0.001;
+		    	float2 offset = float2(cos(angle), sin(angle)) * 0.002 * (1.0 + _SamplesTotal);
+
+		    	angle = rand(lum) * PI2 + _SamplesElapsed * 0.01;
+		    	offset += float2(cos(angle), sin(angle)) * 0.001 * (1.0 + _SamplesTotal + dist * 2.0);
 
 			    half4 video = tex2D(_SamplerVideo, uv);
 			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv - offset);
 
-			    // float oscillo = sin(_TimeElapsed * 10.0) * 0.25 + 0.5;
-
-    			half4 color = lerp(renderTarget, video, step(sample, distance(video.rgb, renderTarget.rgb)));
-	
-
-				// float sound = tex2D(_SamplerSound, uv);
-				// color = half4(sound, sound, sound, 1.0);
+    			half4 color = renderTarget;//lerp(renderTarget, video, step(0.5, distance(video.rgb, renderTarget.rgb)));
+    			// color *= 0.97;
+    			color.a = 1.0;
+			    if (dist < 0.004 + 0.01 * _SamplesTotal)
+			    {
+			    	color.rgb = float3(
+			    		0.5 + 0.5 * rand(float2(0, _SamplesElapsed * 0.01)), 
+			    		0.5 + 0.5 * rand(float2(0, _SamplesElapsed * 0.05)), 
+			    		0.5 + 0.5 * rand(float2(0, _SamplesElapsed * 0.03)));
+			    }
 
 		        return color;
 		    }

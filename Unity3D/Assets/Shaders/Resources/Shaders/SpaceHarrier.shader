@@ -1,4 +1,4 @@
-Shader "Custom/Glitch" {
+Shader "Custom/SpaceHarrier" {
 	Properties {
 	}
 	SubShader {
@@ -38,6 +38,7 @@ Shader "Custom/Glitch" {
 	    	float _RatioBufferTreshold;
 
 	    	float _SamplesTotal;
+	    	float _SamplesElapsed;
 
 			v2f vert (appdata_full v)
 			{
@@ -56,33 +57,41 @@ Shader "Custom/Glitch" {
 		    	float2 p = uv * 2.0 - 1.0;
 		    	p.x *= _ScreenParams.x / _ScreenParams.y;
 
-		    	float dist = length(p);
-		    	float angle = atan2(p.y, p.x);
+		    	float distY = length(p.yy) * 4.0;
+		    	float dist = length(p.xy) * 1.0;
+		    	float angle = atan2(p.y, p.x) / PI + 1.0;
 
-		    	float lum = luminance(tex2D(_SamplerRenderTarget, uv));
-		    	lum = clamp(lum, 0.1, 1.0);
-		    	// angle = ;
-		    	// tex2D(_SamplerSound, float2(angle / PI * 0.5 + 0.5, 0.0)).r
+		    	uv = fmod(abs(float2(p.x / distY + _TimeElapsed * 0.01, log(distY) - _TimeElapsed)), 1.0);
+		    	// uv = lerp(uv, fmod(abs(float2(angle, dist)), 1.0), cos(_SamplesElapsed * 0.01) * 0.5 + 0.5);
 
-		    	float2 offset = float2(cos(angle), sin(angle)) * dist * 0.05 * _SamplesTotal * lum;
+			    float x = uv.x * 2.0;
+			    float xMod = fmod(abs(x), 1.0);
+			    x = lerp(1.0 - xMod, xMod, fmod(floor(abs(x)), 2.0));
 
-		    	float sample = clamp(_SamplesTotal, 0.1, 0.75);
+			    float y = uv.y * 2.0;
+			    float yMod = fmod(abs(y), 1.0);
+			    y = lerp(1.0 - yMod, yMod, fmod(floor(abs(y)), 2.0));
 
-		    	// float seed = luminance(tex2D(_SamplerRenderTarget, uv).rgb);
-		    	float random = rand(uv);
-		    	angle = random * PI2;
-		    	offset += float2(cos(angle), sin(angle)) * 0.001;
+			    uv = float2(x, y);
 
-			    half4 video = tex2D(_SamplerVideo, uv);
-			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv - offset);
+			    // float2 offset = normalize(float2(0.0, -p.y)) * 0.001 * (1.0  + distY * 4.0);
+
+		    	half4 color = tex2D(_SamplerVideo, uv);
+		    	color.rgb *= clamp(distY, 0.0, 1.0);
+
+			    // half4 color = tex2D(_SamplerRenderTarget, uv + offset);
+
+			    // if (distY < 0.01)
+			    // {
+			    // 	color.rgb = float3(
+			    // 		cnoise(float2(_TimeElapsed, _SamplesElapsed * 0.1)), 
+			    // 		cnoise(float2(_TimeElapsed * 0.1, _SamplesElapsed * 0.5)), 
+			    // 		cnoise(float2(_TimeElapsed * 0.5, _SamplesElapsed)));
+			    // }
 
 			    // float oscillo = sin(_TimeElapsed * 10.0) * 0.25 + 0.5;
-
-    			half4 color = lerp(renderTarget, video, step(sample, distance(video.rgb, renderTarget.rgb)));
 	
 
-				// float sound = tex2D(_SamplerSound, uv);
-				// color = half4(sound, sound, sound, 1.0);
 
 		        return color;
 		    }

@@ -5,7 +5,7 @@ namespace WJ
 {
 	public class RenderTexture : MonoBehaviour
 	{
-		float pixelSize = 1f;
+		float pixelSize = 4f;
 		public float PixelSize { get; set; }
 
 		Camera cameraRender;

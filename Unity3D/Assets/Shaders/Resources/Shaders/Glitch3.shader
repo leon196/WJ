@@ -1,4 +1,4 @@
-Shader "Custom/Glitch" {
+Shader "Custom/Glitch3" {
 	Properties {
 	}
 	SubShader {
@@ -53,45 +53,45 @@ Shader "Custom/Glitch" {
 		    half4 frag (v2f i) : COLOR
 		    {
 		    	float2 uv = i.screenUV.xy / i.screenUV.w;
+
+		    	// uv.x *= _ScreenParams.x / _ScreenParams.y;
 		    	
 		    	float2 p = uv * 2.0 - 1.0;
 		    	p.x *= _ScreenParams.x / _ScreenParams.y;
 
-		    	float distY = length(p.yy) * 4.0;
-		    	float dist = length(p.xy) * 1.0;
-		    	float angle = atan2(p.y, p.x) / PI + 1.0;
+		    	float dist = length(p.xy);
+		    	float distY = length(p.yy);
+		    	float angle = atan2(p.y, p.x);
 
-		    	uv = fmod(abs(float2(p.x / distY + _TimeElapsed * 0.01, log(distY) - _TimeElapsed)), 1.0);
-		    	// uv = lerp(uv, fmod(abs(float2(angle, dist)), 1.0), cos(_SamplesElapsed * 0.01) * 0.5 + 0.5);
+    			float d = length(p.yy);
 
-			    float x = uv.x * 2.0;
-			    float xMod = fmod(abs(x), 1.0);
-			    x = lerp(1.0 - xMod, xMod, fmod(floor(abs(x)), 2.0));
+		    	float lum = luminance(tex2D(_SamplerRenderTarget, uv));
 
-			    float y = uv.y * 2.0;
-			    float yMod = fmod(abs(y), 1.0);
-			    y = lerp(1.0 - yMod, yMod, fmod(floor(abs(y)), 2.0));
 
-			    uv = float2(x, y);
+		    	// angle += _TimeElapsed;
 
-			    // float2 offset = normalize(float2(0.0, -p.y)) * 0.001 * (1.0  + distY * 4.0);
+		    	// float2 offset = float2(cos(angle), sin(angle)) * 0.003 * (_SamplesTotal + rand(_SamplesElapsed * 4.0 + lum));
+		    	float2 offset = float2(p.x + p.y, 4.0 * p.y) * 0.002 * (1.0 + _SamplesTotal + 4.0 * (cnoise(1.0 - lum) * 0.5 + 0.5));
 
-		    	half4 color = tex2D(_SamplerVideo, uv);
-		    	color.rgb *= clamp(distY, 0.0, 1.0);
+		    	angle = rand(lum) * PI2 + _SamplesTotal * 0.1;
+		    	// offset += float2(cos(angle), sin(angle)) * 0.001 * (1.0 + p);
 
-			    // half4 color = tex2D(_SamplerRenderTarget, uv + offset);
+			    // half4 video = tex2D(_SamplerVideo, uv);
+			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv - offset);
 
-			    // if (distY < 0.01)
-			    // {
-			    // 	color.rgb = float3(
-			    // 		cnoise(float2(_TimeElapsed, _SamplesElapsed * 0.1)), 
-			    // 		cnoise(float2(_TimeElapsed * 0.1, _SamplesElapsed * 0.5)), 
-			    // 		cnoise(float2(_TimeElapsed * 0.5, _SamplesElapsed)));
-			    // }
+    			half4 color = renderTarget;//lerp(renderTarget, video, step(0.5, distance(video.rgb, renderTarget.rgb)));
+    			// color *= 0.98;
+    			color.a = 1.0;
 
-			    // float oscillo = sin(_TimeElapsed * 10.0) * 0.25 + 0.5;
-	
-
+			    // if (abs(d - 0.01 * _SamplesTotal) < 0.01)
+			    if (abs(d - 0.01 * _SamplesTotal - rand(p.xx) * 0.1) < 0.01)
+			    {
+			    	color.rgb = float3(1.0, 1.0, 1.0) * cnoise(uv.xx * 100.0 + _SamplesElapsed);
+			    		// 0.5 + 0.5 * cnoise(uv.xx * 4.0 + _SamplesElapsed * 0.1), 
+			    		// 0.5 + 0.5 * cnoise(uv.xx * 8.0 + _SamplesElapsed * 0.2), 
+			    		// 0.5 + 0.5 * cnoise(uv.xx * 16.0 + _SamplesElapsed * 0.3));
+			    	//clamp(sin(_SamplesElapsed) * 0.5 + 0.5, 0.0, 1.0);//segment(rand(uv + _SamplesElapsed), 4.0);
+			    }
 
 		        return color;
 		    }

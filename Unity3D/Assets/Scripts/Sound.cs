@@ -29,7 +29,7 @@ namespace WJ
 
 		// public void LoadAudioClip ()
 		// {		
-			var url = "file://" + Application.dataPath + "/StreamingAssets/Gummy Soul - Fela Soul - 05 Itsoweezee.ogg";
+			var url = "file://" + Application.dataPath + "/StreamingAssets/music.ogg";
 			var www = new WWW(url);
 			audioClip = www.audioClip;
 			// audioSource = gameObject.AddComponent<AudioSource>();
