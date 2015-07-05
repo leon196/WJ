@@ -10,6 +10,7 @@ Shader "Custom/Glitch" {
 			LOD 200
 			
 			CGPROGRAM
+			#pragma target 3.0
 		    #pragma vertex vert
 		    #pragma fragment frag   
 	    	#include "UnityCG.cginc"   
@@ -59,13 +60,13 @@ Shader "Custom/Glitch" {
 		    	float angle = atan2(p.y, p.x);
 
 		    	float lum = luminance(tex2D(_SamplerRenderTarget, uv));
-
+		    	lum = clamp(lum, 0.1, 1.0);
 		    	// angle = ;
 		    	// tex2D(_SamplerSound, float2(angle / PI * 0.5 + 0.5, 0.0)).r
 
-		    	float2 offset = float2(cos(angle), sin(angle)) * dist * 0.1 * _SamplesTotal * lum;
+		    	float2 offset = float2(cos(angle), sin(angle)) * dist * 0.05 * _SamplesTotal * lum;
 
-		    	float sample = clamp(_SamplesTotal, 0.25, 0.75);
+		    	float sample = clamp(_SamplesTotal, 0.1, 0.5);
 
 		    	// float seed = luminance(tex2D(_SamplerRenderTarget, uv).rgb);
 		    	float random = rand(uv);

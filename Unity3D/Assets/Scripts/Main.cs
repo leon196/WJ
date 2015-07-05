@@ -10,12 +10,15 @@ namespace WJ
 		Shader shader;
 		RenderTexture renderTexture;
 		Video video;
+		Sound sound;
 
 		void Start () 
 		{
 			shader = GetComponent<Shader>();
 			renderTexture = GetComponentInChildren<RenderTexture>();
 			video = GetComponentInChildren<Video>();
+			sound = GetComponent<Sound>();
+			// sound.LoadAudioClip();
 		}
 
 		void Resize (float pixelSize)
@@ -31,6 +34,18 @@ namespace WJ
 		{
 			UnityEngine.Shader.SetGlobalFloat("_TimeElapsed", Time.time);
 			UnityEngine.Shader.SetGlobalFloat("_MouseX", Input.mousePosition.x / Screen.width);
+
+
+	        if (video.movieTexture.isReadyToPlay && !video.movieTexture.isPlaying)
+	        {      
+	            video.movieTexture.Play();
+				// sound.SetAudioClip(video.movieTexture.audioClip);
+	        }          
+
+	        if (video.movieTexture.isPlaying)
+	        {
+	        	sound.UpdateSamples();
+	        }
 
 			if (cycleMode)
 			{
@@ -55,7 +70,7 @@ namespace WJ
 
 			if (Input.GetKeyDown(KeyCode.Space))
 			{
-				video.Toggle();
+				// video.Toggle();
 			}
 
 			if (Input.GetKeyDown(KeyCode.Escape))

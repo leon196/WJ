@@ -31,6 +31,10 @@
 	    	float4 _SamplerVideo_ST; 
 			float _TimeElapsed;
 
+	    	float _SamplesTotal;
+	    	float _SamplesElapsed;
+			sampler2D _SamplerSound;
+
 			v2f vert (appdata_full v)
 			{
 		        v2f o;
@@ -48,14 +52,15 @@
 
 			    float dist = length(uv);
 			    float angle = atan2(uv.y, uv.x) - PIHalf;
+			    float t = 0.01 * _SamplesElapsed;
 
 			    float a = abs(angle) / PI * 3.0;
-			    a += _TimeElapsed * 0.2 * lerp(-1.0, 1.0,  fmod(floor(a), 2.0));
+			    a += t * lerp(-1.0, 1.0,  fmod(floor(a), 2.0));
 			    float aMod = fmod(abs(a), 1.0);
 			    a = lerp(1.0 - aMod, aMod, fmod(floor(abs(a)), 2.0));
 
 			    float d = log(dist);
-			    d += _TimeElapsed * 0.4 * lerp(-1.0, 1.0, fmod(floor(abs(d)), 2.0));
+			    d += t * lerp(-1.0, 1.0, fmod(floor(abs(d)), 2.0));
 			    float dMod = fmod(abs(d), 1.0);
 			    d = lerp(1.0 - dMod, dMod, fmod(floor(abs(d)), 2.0));
 
