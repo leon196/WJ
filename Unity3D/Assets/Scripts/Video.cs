@@ -12,7 +12,7 @@ namespace WJ
 		{
 			materialEffect = GetComponent<Renderer>().material;
 
-			var url = "file://" + Application.dataPath + "/StreamingAssets/Pelivs TV EP1.ogg";
+			var url = "file://" + Application.dataPath + "/StreamingAssets/movie.ogg";
 
 			var www = new WWW(url);
 

@@ -1,5 +1,6 @@
 ﻿Shader "Custom/Planet" {
 	Properties {
+		_MainTex ("Texture (RGB)", 2D) = "white" {}
 	}
 	SubShader {
    		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
@@ -21,13 +22,15 @@
 			#define PI2 6.283185307179
 			#define PIHalf 1.570796327
 
-		    struct v2f {
-
+		    struct v2f 
+		    {
 		        float4 pos : SV_POSITION;
 		        float2 uv : TEXCOORD0;
                 float4 screenUV : TEXCOORD1;
 		    };   
 
+		    sampler2D _MainTex;
+		    sampler2D _MainTex_ST;
 			sampler2D _SamplerVideo;
 
 			sampler2D _SamplerRenderTarget;
@@ -60,6 +63,7 @@
 			half4 _GlowColor;
 
 			float _SamplesTotal;
+			float _SamplesElapsed;
 
 			v2f vert (appdata_full v)
 			{
@@ -89,8 +93,8 @@
 			        float3 p = _Eye + ray * t;
 			        float3 originP = p;
 
-			        p = rotateX(p, _TimeElapsed * 0.5);
-			        p = rotateY(p, _TimeElapsed * 0.5);
+			        p = rotateX(p, _SamplesElapsed * 0.0125);
+			        p = rotateY(p, _SamplesElapsed * 0.025);
 
 			        float g = 2.0;// + _SamplesTotal;//sin(_TimeElapsed) * 0.5 + 0.5;
 			        //p = fmod(p, float3(g, g, g)) - g / 2.0;
@@ -104,20 +108,20 @@
 				    // uvSphere = lerp(1.0 - uvSphereMod, uvSphereMod, fmod(floor(abs(uvSphere)), 2.0));
 
 				    x *= _ScaleUV.x;
-				    x += _TimeElapsed * 0.2 * lerp(-1.0, 1.0,  fmod(floor(x), 2.0));
+				    // x += _TimeElapsed * 0.2 * lerp(-1.0, 1.0,  fmod(floor(x), 2.0));
 				    float xMod = fmod(abs(x), 1.0);
 				    x = lerp(1.0 - xMod, xMod, fmod(floor(abs(x)), 2.0));
 
 				    y *= _ScaleUV.y;
-				    y += _TimeElapsed * 0.2 * lerp(-1.0, 1.0,  fmod(floor(y), 2.0));
+				    // y += _TimeElapsed * 0.2 * lerp(-1.0, 1.0,  fmod(floor(y), 2.0));
 				    float yMod = fmod(abs(y), 1.0);
 				    y = lerp(1.0 - yMod, yMod, fmod(floor(abs(y)), 2.0));
 
-			        color = tex2D(_SamplerVideo, float2(x, y)).rgb;
+			        color = tex2D(_MainTex, float2(x, y)).rgb;
 
 			        // Displacement height from luminance
-			        p -= normalize(p) * (0.6 + _SamplesTotal * 0.2 * (color.r + color.g + color.b) / 3.0);
-			        //p -= normalize(p) * _PlanetRadius * (color.r + color.g + color.b) / 3.0;
+			        // p -= normalize(p) * (0.8 + (0.2 + _SamplesTotal * 0.1) * (color.r + color.g + color.b) / 3.0);
+			        p -= normalize(p) * (_PlanetRadius + (_SamplesTotal * 0.2 + _DisplacementScale) * (color.r + color.g + color.b) / 3.0);
 
 
 			        // Distance to Sphere

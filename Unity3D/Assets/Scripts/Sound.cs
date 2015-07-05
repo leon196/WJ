@@ -29,16 +29,16 @@ namespace WJ
 
 		// public void LoadAudioClip ()
 		// {		
-			var url = "file://" + Application.dataPath + "/StreamingAssets/DJ Set 2015/249508_Dancefloor_Heaven_Al_Ferox_Remix.wav";
+			var url = "file://" + Application.dataPath + "/StreamingAssets/Gummy Soul - Fela Soul - 05 Itsoweezee.ogg";
 			var www = new WWW(url);
 			audioClip = www.audioClip;
 			// audioSource = gameObject.AddComponent<AudioSource>();
-			// audioSource.clip = audioClip;
+			audioSource.clip = audioClip;
 
-	        if (Microphone.devices.Length > 0)
-	        {
-	        	audioSource.clip = Microphone.Start(Microphone.devices[0], true, 10, 44100);
-	        }
+	        // if (Microphone.devices.Length > 0)
+	        // {
+	        // 	audioSource.clip = Microphone.Start(Microphone.devices[0], true, 10, 44100);
+	        // }
 
 		}
 
