@@ -34,6 +34,7 @@ namespace WJ
 		{
 			UnityEngine.Shader.SetGlobalFloat("_TimeElapsed", Time.time);
 			UnityEngine.Shader.SetGlobalFloat("_MouseX", Input.mousePosition.x / Screen.width);
+			UnityEngine.Shader.SetGlobalFloat("_MouseY", Input.mousePosition.y / Screen.height);
 
 
 	        if (video.movieTexture.isReadyToPlay && !video.movieTexture.isPlaying)

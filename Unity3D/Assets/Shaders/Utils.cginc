@@ -34,6 +34,13 @@ float2 kaelidoGrid(float2 p)
 	return fmod(lerp(p, 1.0 - p, float2(step(fmod(p, 2.0), float2(1.0, 1.0)))), 1.0);
 }
 
+float kaleido (float d, float t)
+{
+  d += t * lerp(-1.0, 1.0, fmod(floor(abs(d)), 2.0));
+  float dMod = fmod(abs(d), 1.0);
+  return lerp(1.0 - dMod, dMod, fmod(floor(abs(d)), 2.0));
+}
+
 float2 mouseFromCenter (float2 mouse, float2 resolution)
 {
 	mouse /= resolution;
@@ -50,6 +57,56 @@ float luminance ( float3 color )
 float reflectance(float3 a, float3 b)
 {
 	return dot(normalize(a), normalize(b)) * 0.5 + 0.5;
+}
+
+half4 filter (sampler2D bitmap, float2 uv, float2 dimension)
+{
+  half4 color = half4(0.0, 0.0, 0.0, 0.0);
+  
+  color += -1.0 * tex2D(bitmap, uv + float2(-2, -2) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-2, -1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-2,  0) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-2,  1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-2,  2) / dimension);
+
+  color += -1.0 * tex2D(bitmap, uv + float2(-1, -2) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-1, -1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-1,  0) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-1,  1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2(-1,  2) / dimension);
+
+  color += -1.0 * tex2D(bitmap, uv + float2( 0, -2) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 0, -1) / dimension);
+  color += 24.0 * tex2D(bitmap, uv + float2( 0,  0) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 0,  1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 0,  2) / dimension);
+
+  color += -1.0 * tex2D(bitmap, uv + float2( 1, -2) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 1, -1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 1,  0) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 1,  1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 1,  2) / dimension);
+  
+  color += -1.0 * tex2D(bitmap, uv + float2( 2, -2) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 2, -1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 2,  0) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 2,  1) / dimension);
+  color += -1.0 * tex2D(bitmap, uv + float2( 2,  2) / dimension);
+
+  return color;
+}
+
+half4 cheesyBlur (sampler2D bitmap, float2 uv, float2 dimension)
+{
+  half4 color = half4(0.0, 0.0, 0.0, 0.0);
+  
+  color += 0.2 * tex2D(bitmap, uv + float2(-1, -1) / dimension);
+  color += 0.2 * tex2D(bitmap, uv + float2(-1,  0) / dimension);
+  color += 0.2 * tex2D(bitmap, uv + float2(-2,  0) / dimension);
+  color += 0.2 * tex2D(bitmap, uv + float2( 0, -1) / dimension);
+  color += 0.2 * tex2D(bitmap, uv + float2( 0,  0) / dimension);
+
+  return color;
 }
 
 // http://stackoverflow.com/questions/12964279/whats-the-origin-of-this-glsl-rand-one-liner

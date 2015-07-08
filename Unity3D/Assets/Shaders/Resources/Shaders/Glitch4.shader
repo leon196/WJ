@@ -1,4 +1,4 @@
-Shader "Custom/Glitch" {
+Shader "Custom/Glitch4" {
 	Properties {
 	}
 	SubShader {
@@ -60,43 +60,37 @@ Shader "Custom/Glitch" {
 		    	float dist = length(p);
 		    	float angle = atan2(p.y, p.x);
 
-		    	float lum = luminance(tex2D(_SamplerRenderTarget, uv));
+		    	float lum = luminance(tex2D(_SamplerVideo, uv));
 		    	// lum = clamp(lum, 0.1, 1.0);
 		    	// angle = ;
 		    	// tex2D(_SamplerSound, float2(angle / PI * 0.5 + 0.5, 0.0)).r
 
-		    	float2 offset = float2(cos(angle), sin(angle)) * 0.002 * _SamplesTotal * (1.0 + lum) * (1.0 + dist);// * sqrt(dist) * clamp(lum * 4.0, 0.0, 1.0);
+		    	// float2 offset = float2(cos(angle), sin(angle)) * 0.001 * _SamplesTotal;// * clamp(lum, 0.2, 1.0);
 
-		    	float sample = lerp(0.25, 0.5, _SamplesTotal);
+		    	float sample = lerp(0.25, 0.75, _SamplesTotal);
 
 		    	// float seed = luminance(tex2D(_SamplerRenderTarget, uv).rgb);
-		    	float random = cnoise(float2(lum, _SamplesElapsed * 0.0001));
-		    	// float random = rand(uv);
-		    	angle = random * PI2;// + _SamplesTotal;
-		    	offset += float2(cos(angle), sin(angle)) * 0.004;// * (1.0 + _SamplesTotal * 4.0);
+		    	float random = cnoise(float2(lum, 0.0));
+		    	angle = random * PI2;
+		    	float2 offset = float2(cos(angle), sin(angle)) * 0.002 * (1.0 + _SamplesTotal * 4.0);
 
 			    half4 video = tex2D(_SamplerVideo, uv);// - offset);
+			    half4 renderTarget = tex2D(_SamplerRenderTarget, uv - offset);
 
-			    // half4 renderTarget = tex2D(_SamplerRenderTarget, uv - offset);
-			    half4 renderTarget = cheesyBlur(_SamplerRenderTarget, uv - offset, _ScreenParams.xy);
-
-				// renderTarget.rgb *= 0.99;
+				renderTarget.rgb *= 1.01;
 				// half4 video = cheesyBlur(_SamplerVideo, uv, _ScreenParams.xy);
 
 			    // float oscillo = sin(_TimeElapsed * 10.0) * 0.25 + 0.5;
 				half4 edge = filter(_SamplerVideo, uv, _ScreenParams.xy);
 
-    			half4 color = lerp(renderTarget, video, step(0.35, luminance(abs(video - renderTarget))));
-    			color = lerp(color, video, clamp(filter(_SamplerVideo, uv, _ScreenParams.xy), 0.0, 1.0));
+    			half4 color = lerp(renderTarget, video, step(sample, distance(video, renderTarget)));
+    			// color = lerp(color, video, clamp(filter(_SamplerVideo, uv, _ScreenParams.xy), 0.0, 1.0));
 
 
 				color.a = 1.0;
 				// float sound = tex2D(_SamplerSound, uv);
 				// color += 0.15 * half4(sound, sound, sound, 1.0);
 				color = clamp(color, 0.0, 1.0);
-
-				// color = half4(1.0, 1.0, 1.0, 1.0);
-				// color.rgb *= sqrt(dist) / 2.0;
 
 		        return color;
 		    }

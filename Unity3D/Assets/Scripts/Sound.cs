@@ -19,7 +19,7 @@ namespace WJ
 	        }
 
 			samplesElapsed = 0f;
-			const int length = 1024;
+			const int length = 256;
 			samples = new float[length];
 			samplesTexture = new Texture2D(length, 1, TextureFormat.ARGB32, false);
 			samplesTotal = 0f;
@@ -29,7 +29,7 @@ namespace WJ
 
 		// public void LoadAudioClip ()
 		// {		
-			var url = "file://" + Application.dataPath + "/StreamingAssets/music.ogg";
+			var url = "file://" + Application.dataPath + "/StreamingAssets/DJ Le Roi Feat. Rolan Clark - I Get Deep (Animal Trainer Remix).ogg";
 			var www = new WWW(url);
 			audioClip = www.audioClip;
 			// audioSource = gameObject.AddComponent<AudioSource>();
@@ -62,15 +62,26 @@ namespace WJ
 	        for (int i = 0; i < samples.Length; ++i)
 	        {
 	        	float sample = samples[i];
-	        	colors[i] = Color.white * sample;
-	        	samplesTotal += sample;
+
+	        	// colors[i] = Color.white * sample;
+	        	// samplesTotal += sample;
+
+	        	if (sample > 0.0001f)
+	        	{
+	        		colors[i] = Color.white;
+	        		samplesTotal += 1f;
+	        	}
+	        	else
+	        	{
+	        		colors[i] = Color.black;
+	        	}
 	        }
 			samplesTexture.SetPixels(colors, 0);
 	        samplesTexture.Apply(false);
 
 	        samplesElapsed += samplesTotal;
 
-			UnityEngine.Shader.SetGlobalFloat("_SamplesTotal", samplesTotal);
+			UnityEngine.Shader.SetGlobalFloat("_SamplesTotal", samplesTotal / (float)samples.Length);
 
 			UnityEngine.Shader.SetGlobalFloat("_SamplesElapsed", samplesElapsed);
 	    }

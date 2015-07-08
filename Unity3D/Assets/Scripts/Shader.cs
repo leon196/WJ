@@ -10,7 +10,7 @@ namespace WJ
 		void Start ()
 		{
 			delayBeforeNewObject = 10f;
-			
+
 			objects = Resources.LoadAll("Shaders");
 			materialEffect = GetComponentInChildren<Video>().GetComponent<Renderer>().material;
 
@@ -36,7 +36,7 @@ namespace WJ
 	    	UnityEngine.Shader.SetGlobalVector("_Front", new Vector3(0f, 0f, 1.0f));
 	    	UnityEngine.Shader.SetGlobalVector("_Up", new Vector3(0f, 1f, 0f));
 	    	UnityEngine.Shader.SetGlobalVector("_Right", new Vector3(1f, 0f, 0f));
-
+	    	
 	    	UnityEngine.Shader.SetGlobalVector("_ScaleUV", new Vector2(1f, 1f));
 	    	UnityEngine.Shader.SetGlobalVector("_OffsetUV", new Vector2(0f, 0f));
 			
