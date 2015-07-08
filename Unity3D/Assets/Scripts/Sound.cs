@@ -29,7 +29,7 @@ namespace WJ
 
 		// public void LoadAudioClip ()
 		// {		
-			var url = "file://" + Application.dataPath + "/StreamingAssets/DJ Le Roi Feat. Rolan Clark - I Get Deep (Animal Trainer Remix).ogg";
+			var url = "file://" + Application.dataPath + "/StreamingAssets/music.ogg";
 			var www = new WWW(url);
 			audioClip = www.audioClip;
 			// audioSource = gameObject.AddComponent<AudioSource>();

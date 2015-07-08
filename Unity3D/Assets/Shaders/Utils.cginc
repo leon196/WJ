@@ -109,6 +109,11 @@ half4 cheesyBlur (sampler2D bitmap, float2 uv, float2 dimension)
   return color;
 }
 
+float grid2D (float x, float lineDistance, float lineThickness)
+{
+  return step(fmod(x, lineDistance), lineThickness);
+}
+
 // http://stackoverflow.com/questions/12964279/whats-the-origin-of-this-glsl-rand-one-liner
 float rand(float2 co)
 {
