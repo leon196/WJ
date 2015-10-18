@@ -2,7 +2,7 @@ Shader "Custom/Wireframe" {
   Properties {
     _Color ("Color", Color) = (1,1,1,1)
     _MainTex ("Texture (RGB)", 2D) = "white" {}
-		_Size ("Size", Range(0, 0.2)) = 0.01
+		_Size ("Size", Range(0, 1.0)) = 0.01
     }
     SubShader {
       Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
@@ -72,112 +72,83 @@ Shader "Custom/Wireframe" {
           float3 i = lerp(c, g, 0.8);
           float3 j = lerp(a, g, 0.8);
 
-          float3 dRight = normalize(a - b);
-          float3 eRight = normalize(b - c);
-          float3 fRight = normalize(c - a);
+          float3 dRight = normalize(a - b) * _Size * distance(a, b) * 0.5;
+          float3 eRight = normalize(b - c) * _Size * distance(c, b) * 0.5;
+          float3 fRight = normalize(c - a) * _Size * distance(a, c) * 0.5;
 
-					float4 v[12];
+					float4 v[9];
 
-          // Quad for D -> G
-					v[0] = float4(d + dRight * _Size, 1.0f);
-					v[1] = float4(d - dRight * _Size, 1.0f);
-					v[2] = float4(j, 1.0f);
-					v[3] = float4(h, 1.0f);
+					v[0] = float4(d + dRight, 1.0f);
+					v[1] = float4(d - dRight, 1.0f);
+					v[2] = float4(g, 1.0f);
 
-          // Quad for E -> G
-					v[4] = float4(e + eRight * _Size, 1.0f);
-					v[5] = float4(e - eRight * _Size, 1.0f);
-					v[6] = float4(h, 1.0f);
-					v[7] = float4(i, 1.0f);
+					v[3] = float4(e + eRight, 1.0f);
+					v[4] = float4(e - eRight, 1.0f);
+					v[5] = float4(g, 1.0f);
 
-          // Quad for F -> G
-					v[8] = float4(f + fRight * _Size, 1.0f);
-					v[9] = float4(f - fRight * _Size, 1.0f);
-					v[10] = float4(i, 1.0f);
-					v[11] = float4(j, 1.0f);
+					v[6] = float4(f + fRight, 1.0f);
+					v[7] = float4(f - fRight, 1.0f);
+					v[8] = float4(g, 1.0f);
+
+          float2 uvs[9];
+
+          float2 uvAB = lerp(tri[0].uv, tri[1].uv, 0.5);
+          float2 uvBC = lerp(tri[1].uv, tri[2].uv, 0.5);
+          float2 uvCA = lerp(tri[2].uv, tri[0].uv, 0.5);
+          float2 uvG = (tri[0].uv + tri[1].uv + tri[2].uv) / 3.0;
+
+          uvs[0] = lerp(tri[0].uv, uvAB, _Size);
+          uvs[1] = lerp(uvAB, tri[1].uv, _Size);
+          uvs[3] = lerp(tri[1].uv, uvBC, _Size);
+          uvs[4] = lerp(uvBC, tri[2].uv, _Size);
+          uvs[6] = lerp(tri[2].uv, uvCA, _Size);
+          uvs[7] = lerp(uvCA, tri[0].uv, _Size);
+
+          uvs[2] = uvG;
+          uvs[5] = uvG;
+          uvs[8] = uvG;
 
 					float4x4 vp = mul(UNITY_MATRIX_MVP, _World2Object);
 					FS_INPUT pIn = (FS_INPUT)0;
 					pIn.pos = mul(vp, v[0]);
-					pIn.uv = tri[0].uv;
+					pIn.uv = uvs[0];
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, v[1]);
-					pIn.uv = tri[0].uv;
+					pIn.uv = uvs[1];
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, v[2]);
-					pIn.uv = tri[1].uv;
+					pIn.uv = uvs[2];
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, v[3]);
-					pIn.uv = tri[1].uv;
+					pIn.uv = uvs[3];
 					triStream.Append(pIn);
-          triStream.RestartStrip();
 
 					pIn.pos = mul(vp, v[4]);
-					pIn.uv = tri[1].uv;
+					pIn.uv = uvs[4];
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, v[5]);
-					pIn.uv = tri[1].uv;
+					pIn.uv = uvs[5];
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, v[6]);
-					pIn.uv = tri[2].uv;
+					pIn.uv = uvs[6];
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, v[7]);
-					pIn.uv = tri[2].uv;
-					triStream.Append(pIn);
-          triStream.RestartStrip();
-
-					pIn.pos = mul(vp, v[8]);
-					pIn.uv = tri[2].uv;
+					pIn.uv = uvs[7];
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[9]);
-					pIn.uv = tri[2].uv;
+					pIn.pos =  mul(vp, v[8]);
+					pIn.uv = uvs[8];
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[10]);
-					pIn.uv = tri[1].uv;
+					pIn.pos =  mul(vp, v[0]);
+					pIn.uv = uvs[0];
 					triStream.Append(pIn);
-
-					pIn.pos =  mul(vp, v[11]);
-					pIn.uv = tri[1].uv;
-					triStream.Append(pIn);
-
-          triStream.RestartStrip();
-					pIn.pos =  mul(vp, float4(h, 1.0));
-					pIn.uv = float2(0.0, 0.0);
-					triStream.Append(pIn);
-
-          pIn.pos =  mul(vp, float4(i, 1.0));
-					pIn.uv = float2(0.0, 1.0);
-					triStream.Append(pIn);
-
-          pIn.pos =  mul(vp, float4(j, 1.0));
-					pIn.uv = float2(1.0, 0.0);
-					triStream.Append(pIn);
-
-					/*float4x4 vp = mul(UNITY_MATRIX_MVP, _World2Object);
-					FS_INPUT pIn = (FS_INPUT)0;
-					pIn.pos = mul(vp, tri[0].pos);//v[0]);
-					pIn.uv = tri[0].uv;//float2(1.0f, 0.0f);
-					triStream.Append(pIn);
-
-					pIn.pos =  mul(vp, tri[1].pos);//v[1]);
-					pIn.uv = tri[1].uv;//float2(1.0f, 1.0f);
-					triStream.Append(pIn);*/
-
-					/*pIn.pos =  mul(vp, tri[2].pos);//v[2]);
-					pIn.uv = tri[2].uv;//float2(0.0f, 0.0f);
-					triStream.Append(pIn);*/
-
-					/*pIn.pos =  mul(vp, v[3]);
-					pIn.uv = float2(0.0f, 1.0f);
-					triStream.Append(pIn);*/
 				}
 
         half4 frag (FS_INPUT i) : COLOR
