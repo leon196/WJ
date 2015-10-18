@@ -68,86 +68,60 @@ Shader "Custom/Wireframe" {
           float3 e = (c + b) / 2.0;
           float3 f = (c + a) / 2.0;
           float3 g = (a + b + c) / 3.0;
-          float3 h = lerp(b, g, 0.8);
-          float3 i = lerp(c, g, 0.8);
-          float3 j = lerp(a, g, 0.8);
 
-          float3 dRight = normalize(a - b) * _Size * distance(a, b) * 0.5;
+          g += cross(normalize(a - b), normalize(b - c)) * _Size;
+
+          /*float3 dRight = normalize(a - b) * _Size * distance(a, b) * 0.5;
           float3 eRight = normalize(b - c) * _Size * distance(c, b) * 0.5;
-          float3 fRight = normalize(c - a) * _Size * distance(a, c) * 0.5;
+          float3 fRight = normalize(c - a) * _Size * distance(a, c) * 0.5;*/
 
-					float4 v[9];
-
-					v[0] = float4(d + dRight, 1.0f);
-					v[1] = float4(d - dRight, 1.0f);
-					v[2] = float4(g, 1.0f);
-
-					v[3] = float4(e + eRight, 1.0f);
-					v[4] = float4(e - eRight, 1.0f);
-					v[5] = float4(g, 1.0f);
-
-					v[6] = float4(f + fRight, 1.0f);
-					v[7] = float4(f - fRight, 1.0f);
-					v[8] = float4(g, 1.0f);
-
-          float2 uvs[9];
-
-          float2 uvAB = lerp(tri[0].uv, tri[1].uv, 0.5);
+          /*float2 uvAB = lerp(tri[0].uv, tri[1].uv, 0.5);
           float2 uvBC = lerp(tri[1].uv, tri[2].uv, 0.5);
-          float2 uvCA = lerp(tri[2].uv, tri[0].uv, 0.5);
-          float2 uvG = (tri[0].uv + tri[1].uv + tri[2].uv) / 3.0;
-
-          uvs[0] = lerp(tri[0].uv, uvAB, _Size);
-          uvs[1] = lerp(uvAB, tri[1].uv, _Size);
-          uvs[3] = lerp(tri[1].uv, uvBC, _Size);
-          uvs[4] = lerp(uvBC, tri[2].uv, _Size);
-          uvs[6] = lerp(tri[2].uv, uvCA, _Size);
-          uvs[7] = lerp(uvCA, tri[0].uv, _Size);
-
-          uvs[2] = uvG;
-          uvs[5] = uvG;
-          uvs[8] = uvG;
+          float2 uvCA = lerp(tri[2].uv, tri[0].uv, 0.5);*/
+          float2 uvA = tri[0].uv;
+          float2 uvB = tri[1].uv;
+          float2 uvC = tri[2].uv;
+          float2 uvG = (uvA + uvB + uvC) / 3.0;
 
 					float4x4 vp = mul(UNITY_MATRIX_MVP, _World2Object);
 					FS_INPUT pIn = (FS_INPUT)0;
-					pIn.pos = mul(vp, v[0]);
-					pIn.uv = uvs[0];
+					pIn.pos = mul(vp, float4(a, 1.0));
+					pIn.uv = uvA;
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[1]);
-					pIn.uv = uvs[1];
+					pIn.pos =  mul(vp, float4(b, 1.0));
+					pIn.uv = uvB;
+					triStream.Append(pIn);
+					pIn.pos =  mul(vp, float4(g, 1.0));
+					pIn.uv = uvG;
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[2]);
-					pIn.uv = uvs[2];
+          triStream.RestartStrip();
+
+					pIn.pos =  mul(vp, float4(b, 1.0));
+					pIn.uv = uvB;
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[3]);
-					pIn.uv = uvs[3];
+					pIn.pos =  mul(vp, float4(c, 1.0));
+					pIn.uv = uvC;
 					triStream.Append(pIn);
 
-					pIn.pos = mul(vp, v[4]);
-					pIn.uv = uvs[4];
+					pIn.pos =  mul(vp, float4(g, 1.0));
+					pIn.uv = uvG;
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[5]);
-					pIn.uv = uvs[5];
+          triStream.RestartStrip();
+
+					pIn.pos =  mul(vp, float4(c, 1.0));
+					pIn.uv = uvC;
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[6]);
-					pIn.uv = uvs[6];
+					pIn.pos =  mul(vp, float4(a, 1.0));
+					pIn.uv = uvA;
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, v[7]);
-					pIn.uv = uvs[7];
-					triStream.Append(pIn);
-
-					pIn.pos =  mul(vp, v[8]);
-					pIn.uv = uvs[8];
-					triStream.Append(pIn);
-
-					pIn.pos =  mul(vp, v[0]);
-					pIn.uv = uvs[0];
+					pIn.pos =  mul(vp, float4(g, 1.0));
+					pIn.uv = uvG;
 					triStream.Append(pIn);
 				}
 
