@@ -30,6 +30,7 @@ Shader "Custom/Wireframe" {
           float4 pos : SV_POSITION;
           float2 uv : TEXCOORD0;
           float4 screenUV : TEXCOORD1;
+          half4 color : COLOR;
         };
 
         sampler2D _MainTex;
@@ -87,48 +88,58 @@ Shader "Custom/Wireframe" {
 					FS_INPUT pIn = (FS_INPUT)0;
 					pIn.pos = mul(vp, float4(a, 1.0));
 					pIn.uv = uvA;
+          pIn.color = half4(0.0,0.0,0.0,1.0);
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, float4(b, 1.0));
 					pIn.uv = uvB;
+          pIn.color = half4(0.0,0.0,0.0,1.0);
 					triStream.Append(pIn);
+
 					pIn.pos =  mul(vp, float4(g, 1.0));
 					pIn.uv = uvG;
+          pIn.color = half4(1.0,1.0,1.0,1.0);
 					triStream.Append(pIn);
 
           triStream.RestartStrip();
 
 					pIn.pos =  mul(vp, float4(b, 1.0));
 					pIn.uv = uvB;
+          pIn.color = half4(0.0,0.0,0.0,1.0);
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, float4(c, 1.0));
 					pIn.uv = uvC;
+          pIn.color = half4(0.0,0.0,0.0,1.0);
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, float4(g, 1.0));
 					pIn.uv = uvG;
+          pIn.color = half4(1.0,1.0,1.0,1.0);
 					triStream.Append(pIn);
 
           triStream.RestartStrip();
 
 					pIn.pos =  mul(vp, float4(c, 1.0));
 					pIn.uv = uvC;
+          pIn.color = half4(0.0,0.0,0.0,1.0);
 					triStream.Append(pIn);
 
-					pIn.pos =  mul(vp, float4(a, 1.0));
+					pIn.pos = mul(vp, float4(a, 1.0));
 					pIn.uv = uvA;
+          pIn.color = half4(0.0,0.0,0.0,1.0);
 					triStream.Append(pIn);
 
 					pIn.pos =  mul(vp, float4(g, 1.0));
 					pIn.uv = uvG;
+          pIn.color = half4(1.0,1.0,1.0,1.0);
 					triStream.Append(pIn);
 				}
 
         half4 frag (FS_INPUT i) : COLOR
         {
           float2 screenUV = i.screenUV.xy / i.screenUV.w;
-          half4 color = tex2D(_MainTex, i.uv);
+          half4 color = tex2D(_MainTex, i.uv) * lerp(1.0, i.color, _Size);
 
           // color.a = step(fmod(screenUV, 0.1), 0.05);
           return color;
