@@ -1,4 +1,4 @@
-Shader "Custom/Wireframe" {
+Shader "Custom/Wireframe2" {
   Properties {
     _Color ("Color", Color) = (1,1,1,1)
     _MainTex ("Texture (RGB)", 2D) = "white" {}

@@ -9,6 +9,8 @@ Shader "Custom/Warband" {
       Pass {
         Blend SrcAlpha OneMinusSrcAlpha
         LOD 200
+        Cull Back
+        ZWrite Off
 
         CGPROGRAM
         #pragma vertex vert
@@ -98,21 +100,23 @@ Shader "Custom/Warband" {
           float2 uvC = tri[2].uv;
           float3 g = (a + b + c) / 3.0;
 
-          float t = cos(_Time * 40.0) * 0.5 + 0.5;
+          float t = cos(_Time * 60.0) * 0.5 + 0.5;
 
           /*a += normalize(a - g) * t * 4.0;
           b += normalize(b - g) * t * 4.0;
           c += normalize(c - g) * t * 4.0;*/
 
-          float angle = pow(noise(g) * 2.0 + 1.0, 2.0) * t * 0.5;
+          /*float angle = pow(noise(g) * 2.0 + 1.0, 2.0) * t * 0.5;
           a = rotateY(a, angle);
           a = rotateX(a, angle);
           b = rotateY(b, angle);
           b = rotateX(b, angle);
           c = rotateY(c, angle);
-          c = rotateX(c, angle);
+          c = rotateX(c, angle);*/
 
-          a *= lerp(1.0, 0.0, t);
+          /*a *= lerp(1.0, 0.0, t);*/
+          /*a += lerp(0.0, 100.0, t);*/
+          /*a += 10.0 * tri[0].normal;*/
 
           float4x4 vp = mul(UNITY_MATRIX_MVP, _World2Object);
 
@@ -120,19 +124,19 @@ Shader "Custom/Warband" {
           pIn.pos = mul(vp, float4(a, 1.0));
           pIn.uv = tri[0].uv;
           pIn.normal = tri[0].normal;
-          pIn.color = half4(0.0,0.0,0.0,1.0);
+          pIn.color = half4(1.0,0.0,0.0,1.0);
           triStream.Append(pIn);
 
           pIn.pos =  mul(vp, float4(b, 1.0));
           pIn.uv = tri[1].uv;
           pIn.normal = tri[1].normal;
-          pIn.color = half4(0.0,0.0,0.0,1.0);
+          pIn.color = half4(0.0,1.0,0.0,0.0);
           triStream.Append(pIn);
 
           pIn.pos =  mul(vp, float4(c, 1.0));
           pIn.uv = tri[2].uv;
           pIn.normal = tri[2].normal;
-          pIn.color = half4(1.0,1.0,1.0,1.0);
+          pIn.color = half4(0.0,0.0,1.0,1.0);
           triStream.Append(pIn);
         }
 
@@ -140,8 +144,15 @@ Shader "Custom/Warband" {
         {
           float2 screenUV = i.screenUV.xy / i.screenUV.w;
           half4 color = tex2D(_MainTex, i.uv);
-          color.rgb = i.normal.xyz * 0.5 + 0.5;
-          // color.a = step(fmod(screenUV, 0.1), 0.05);
+          i.normal = rotateY(i.normal, _Time * 100.0);
+          i.normal = rotateX(i.normal, _Time * 100.0);
+          color.rgb = i.normal * 0.5 + 0.5;
+          float wireframeSize = 0.05;
+          float wireframeStep = step(i.color.r, wireframeSize);
+          wireframeStep += step(i.color.g, wireframeSize);
+          wireframeStep += step(i.color.b, wireframeSize);
+          wireframeStep = clamp(wireframeStep, 0.0, 1.0);
+          color.a = wireframeStep;
           return color;
         }
         ENDCG
