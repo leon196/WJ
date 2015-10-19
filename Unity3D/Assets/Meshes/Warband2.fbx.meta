@@ -535,6 +535,9 @@ ModelImporter:
     101054: DrawCall_292_MeshPart3
     101056: DrawCall_292_MeshPart4
     101058: DrawCall_292_MeshPart5
+    101060: DrawCall_292.001
+    101062: DrawCall_292.002
+    101064: DrawCall_292.003
     400000: DrawCall_1
     400002: DrawCall_10
     400004: DrawCall_100
@@ -1065,6 +1068,9 @@ ModelImporter:
     401054: DrawCall_292_MeshPart3
     401056: DrawCall_292_MeshPart4
     401058: DrawCall_292_MeshPart5
+    401060: DrawCall_292.001
+    401062: DrawCall_292.002
+    401064: DrawCall_292.003
     2300000: DrawCall_1
     2300002: DrawCall_10
     2300004: DrawCall_100
@@ -1594,6 +1600,9 @@ ModelImporter:
     2301052: DrawCall_292_MeshPart3
     2301054: DrawCall_292_MeshPart4
     2301056: DrawCall_292_MeshPart5
+    2301058: DrawCall_292.001
+    2301060: DrawCall_292.002
+    2301062: DrawCall_292.003
     3300000: DrawCall_1
     3300002: DrawCall_10
     3300004: DrawCall_100
@@ -2123,6 +2132,9 @@ ModelImporter:
     3301052: DrawCall_292_MeshPart3
     3301054: DrawCall_292_MeshPart4
     3301056: DrawCall_292_MeshPart5
+    3301058: DrawCall_292.001
+    3301060: DrawCall_292.002
+    3301062: DrawCall_292.003
     4300000: DrawCall_264
     4300002: DrawCall_478
     4300004: DrawCall_418
@@ -2652,6 +2664,9 @@ ModelImporter:
     4301052: DrawCall_292_MeshPart3
     4301054: DrawCall_292_MeshPart4
     4301056: DrawCall_292_MeshPart5
+    4301058: DrawCall_292.003
+    4301060: DrawCall_292.002
+    4301062: DrawCall_292.001
   materials:
     importMaterials: 1
     materialName: 0

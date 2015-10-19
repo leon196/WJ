@@ -69,9 +69,12 @@ Shader "Distortion/Tornado" {
         {
           GS_INPUT o = (GS_INPUT)0;
 
-          float tt = _Time * 4.0;
+          /*v.vertex.y += sin(_Time * 10.0) * 20.0;*/
+          v.vertex.y += lerp(0.0, 2.0, sin(_Time * 20.0) * 0.5 + 0.5);
+
+          float tt = _Time * 24.0;
           float radius = 2.0;
-          float3 target = float3(10.0 + cos(tt) * radius, 0.0, 10.0 + sin(tt) * radius);
+          float3 target = float3(cos(tt) * radius, 0.0, sin(tt) * radius);
           float dist = distance(target, v.vertex.xyz);
           dist = pow(dist, 2.0) / 10.0;
           float angle = dist;

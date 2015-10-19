@@ -101,9 +101,12 @@ Shader "Distortion/VertexLog" {
           /*a = normalize(a) * pow(length(a), 2.0);
           b = normalize(b) * pow(length(b), 2.0);
           c = normalize(c) * pow(length(c), 2.0);*/
-          a = normalize(a) * (log(length(a)) + 2.0) * 4.0;
+          /*a = normalize(a) * (log(length(a)) + 2.0) * 4.0;
           b = normalize(b) * (log(length(b)) + 2.0) * 4.0;
-          c = normalize(c) * (log(length(c)) + 2.0) * 4.0;
+          c = normalize(c) * (log(length(c)) + 2.0) * 4.0;*/
+          a = normalize(a) * sin(length(a) + _Time) * length(a);
+          b = normalize(b) * sin(length(b) + _Time) * length(b);
+          c = normalize(c) * sin(length(c) + _Time) * length(c);
           // Scale
           /*a += normalize(a - g) * t;
           b += normalize(b - g) * t;
