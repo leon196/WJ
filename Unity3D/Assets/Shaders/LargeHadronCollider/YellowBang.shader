@@ -1,4 +1,4 @@
-Shader "LargeHadronCollider/BlueCylinder" {
+Shader "LargeHadronCollider/YellowBang" {
   Properties {
     _Color ("Color", Color) = (1,1,1,1)
     _MainTex ("Texture (RGB)", 2D) = "white" {}
@@ -112,17 +112,14 @@ Shader "LargeHadronCollider/BlueCylinder" {
           t *= 2.0;
 
           // Scale
-          /*a -= normalize(a - g) * _Scale;
-          b -= normalize(b - g) * _Scale;
-          c -= normalize(c - g) * _Scale;
-          d -= normalize(d - g) * _Scale;*/
+          a -= normalize(a - g) * 0.05;
+          b -= normalize(b - g) * 0.05;
+          c -= normalize(c - g) * 0.05;
 
-          float distorsion = 1.0 + 0.5 * abs(snoise(a));
 
-          a *= lerp(1.0, distorsion, t);
-          b *= lerp(1.0, distorsion, t);
-          c *= lerp(1.0, distorsion, t);
-          d *= lerp(1.0, distorsion, t);
+          a *= 0.0;
+          b = lerp(0.0, normalize(b) * abs(snoise(b * 2.0)), t);
+          c = lerp(0.0, normalize(c) * abs(snoise(c * 2.0)), t);
 
           float3 normal = cross(normalize(b - c), normalize(b - a));
 
@@ -146,18 +143,13 @@ Shader "LargeHadronCollider/BlueCylinder" {
           pIn.normal = normal;
           pIn.color = half4(0.0,0.0,1.0,0.0);
           triStream.Append(pIn);
-
-          pIn.pos =  mul(vp, float4(d, 1.0));
-          pIn.uv = tri[2].uv;
-          pIn.normal = normal;
-          pIn.color = half4(0.0,0.0,0.0,1.0);
-          triStream.Append(pIn);
         }
 
         half4 frag (FS_INPUT i) : COLOR
         {
           half4 color = _Color;
-          /*color.rgb *= Luminance(i.normal * 0.5 + 0.5);*/
+          color.rgb *= Luminance(i.normal * 0.5 + 0.5);
+          color.rgb = clamp(color.rgb * 2.0, 0.0, 1.0);
           return color;
         }
         ENDCG
