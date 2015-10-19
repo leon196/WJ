@@ -9,8 +9,7 @@ Shader "Custom/Warband" {
       Pass {
         Blend SrcAlpha OneMinusSrcAlpha
         LOD 200
-        Cull Back
-        ZWrite Off
+        Cull Off
 
         CGPROGRAM
         #pragma vertex vert
@@ -78,10 +77,10 @@ Shader "Custom/Warband" {
         GS_INPUT vert (appdata_full v)
         {
           GS_INPUT o = (GS_INPUT)0;
-          /*float t = cos(_Time * 60.0) * 0.5 + 0.5;
-          float angle = pow(length(v.vertex.xyz) * 2.0 + 1.0, 2.0) * t;
+          float t = cos(_Time * 60.0) * 0.5 + 0.5;
+          float angle = 1.0 / length(v.vertex.xyz) * t;
           v.vertex.xyz = rotateY(v.vertex.xyz, angle);
-          v.vertex.xyz = rotateX(v.vertex.xyz, angle);*/
+          /*v.vertex.xyz = rotateX(v.vertex.xyz, angle);*/
           o.pos =  mul(_Object2World, v.vertex);
           o.normal = v.normal;
           o.uv = TRANSFORM_TEX (v.texcoord, _MainTex);
@@ -144,15 +143,9 @@ Shader "Custom/Warband" {
         {
           float2 screenUV = i.screenUV.xy / i.screenUV.w;
           half4 color = tex2D(_MainTex, i.uv);
-          i.normal = rotateY(i.normal, _Time * 100.0);
-          i.normal = rotateX(i.normal, _Time * 100.0);
+          /*i.normal = rotateY(i.normal, _Time * 100.0);
+          i.normal = rotateX(i.normal, _Time * 100.0);*/
           color.rgb = i.normal * 0.5 + 0.5;
-          float wireframeSize = 0.05;
-          float wireframeStep = step(i.color.r, wireframeSize);
-          wireframeStep += step(i.color.g, wireframeSize);
-          wireframeStep += step(i.color.b, wireframeSize);
-          wireframeStep = clamp(wireframeStep, 0.0, 1.0);
-          color.a = wireframeStep;
           return color;
         }
         ENDCG
