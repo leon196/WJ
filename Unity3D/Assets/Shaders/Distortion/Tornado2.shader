@@ -56,10 +56,10 @@ Shader "Distortion/Tornado2" {
           return float3(v.x, v.y * cost - v.z * sint, v.y * sint + v.z * cost);
         }
 
-        float3 getNormal(GS_INPUT tri[3])
+        float3 getTriangleNormal(float3 a, float3 b, float3 c)
         {
-          float3 u = tri[1].pos - tri[0].pos;
-          float3 v = tri[2].pos - tri[0].pos;
+          float3 u = b - a;
+          float3 v = c - a;
           float3 normal = float3(1.0, 0.0, 0.0);
           normal.x = u.y * v.z - u.z * v.y;
           normal.y = u.z * v.x - u.x * v.z;
@@ -69,24 +69,49 @@ Shader "Distortion/Tornado2" {
 
         float getLogCustom(float x)
         {
-          return (log(x) + 2.0) * 4.0;
+          return log(x / 100.0 + 0.01) + 2.0;
+        }
+
+        float getExpogCustom(float x)
+        {
+          return pow(x / 7.6, 2.0);
+        }
+        float getTest1(float x)
+        {
+          return fmod(20.0, (x - 10.0));
+        }
+        float getTest2(float x)
+        {
+          return 10.0 * sin(pow(x/10.0, 2.0));
+        }
+        float getTest3(float x)
+        {
+          x /= 6.6;
+          return 0.02 * pow(x + sin(x + _Time * 40.0) * 4.0, 2.0);
+        }
+
+        float getLogCustom2(float x)
+        {
+          return (log(x + 2.0));
         }
 
         GS_INPUT vert (appdata_full v)
         {
           GS_INPUT o = (GS_INPUT)0;
 
-          /*v.vertex.y += sin(_Time * 10.0) * 20.0;*/
+          /*v.vertex.y *= 8.0;*/
+          /*v.vertex.y = pow(v.vertex.y + 2.0, 2.0);*/
           /*v.vertex.y += lerp(0.0, 2.0, sin(_Time * 20.0) * 0.5 + 0.5);*/
+          /*v.vertex.y += lerp(0.0, 68.0, sin(_Time * 20.0) * 0.5 + 0.5);*/
 
-          /*float tt = _Time * 24.0;
+          float tt = _Time * 24.0;
           float radius = 2.0;
           float3 target = float3(cos(tt) * radius, 0.0, sin(tt) * radius);
-          float dist = distance(target, v.vertex.xyz);
+          /*float dist = distance(target, v.vertex.xyz);
           dist = pow(dist, 2.0) / 10.0;
-          float angle = dist;
+          float angle = dist;*/
 
-          v.vertex.xyz = rotateY(v.vertex.xyz, angle);*/
+          /*v.vertex.xyz += target;*/
 
           o.pos =  mul(_Object2World, v.vertex);
           o.normal = v.normal;
@@ -98,6 +123,8 @@ Shader "Distortion/Tornado2" {
         [maxvertexcount(3)]
         void geom(triangle GS_INPUT tri[3], inout TriangleStream<FS_INPUT> triStream)
         {
+          float4x4 vp = mul(UNITY_MATRIX_MVP, _World2Object);
+
           float3 a = tri[0].pos;
           float3 b = tri[1].pos;
           float3 c = tri[2].pos;
@@ -106,7 +133,9 @@ Shader "Distortion/Tornado2" {
           float2 uvC = tri[2].uv;
           /*float3 g = (a + b + c) / 3.0;*/
 
-          float t = cos(_Time * 30.0) * 0.5 + 0.5;
+          float t = cos(_Time * 3.0) * 0.5 + 0.5;
+          float tt = _Time * 30.0;
+
 
           /*a = normalize(a) * pow(length(a), 2.0);
           b = normalize(b) * pow(length(b), 2.0);
@@ -115,48 +144,64 @@ Shader "Distortion/Tornado2" {
           /*b = _WorldSpaceCameraPos - b;*/
           /*c = _WorldSpaceCameraPos - c;*/
 
-          a = normalize(a) * getLogCustom(length(a));
-          b = normalize(b) * getLogCustom(length(b));
-          c = normalize(c) * getLogCustom(length(c));
+          float scale = 0.0;
+
+          float3 aa = mul(vp, float4(a, 1.0)).xyz;
+          float3 bb = mul(vp, float4(b, 1.0)).xyz;
+          float3 cc = mul(vp, float4(c, 1.0)).xyz;
+          float3 cam = mul(vp, float4(_WorldSpaceCameraPos, 1.0).xyz);
+
+
+          float aLength = distance(_WorldSpaceCameraPos, a);
+          float bLength = distance(_WorldSpaceCameraPos, b);
+          float cLength = distance(_WorldSpaceCameraPos, c);
+          a = normalize(a + _WorldSpaceCameraPos) * (getExpogCustom(aLength) + aLength);
+          b = normalize(b + _WorldSpaceCameraPos) * (getExpogCustom(bLength) + bLength);
+          c = normalize(c + _WorldSpaceCameraPos) * (getExpogCustom(cLength) + cLength);
+
+                    float4 color = float4(1.0,1.0,1.0,1.0);
+                    /*color.rgb *= clamp(1.0/(distance(_WorldSpaceCameraPos, a)/10.0), 0.0, 1.0);*/
           // Scale
           /*a += normalize(a - g) * t;
           b += normalize(b - g) * t;
           c += normalize(c - g) * t;*/
-
-          /*float tt = _Time * 30.0;
+          /*
           float radius = 10.0;
-          float3 target = float3(10.0 + cos(tt) * radius, 0.0, 10.0 + sin(tt) * radius);
-          float dist = distance(target, g) / 10.0;
+          float3 target = float3(10.0 + cos(tt) * radius, 0.0, 10.0 + sin(tt) * radius);*/
+          /*float dist = distance(target, g) / 10.0;*/
+          /*float dist = length()
           dist = pow(dist, 2.0) / 100.0;
           float angle = dist;*/
 
-          /*a = rotateY(target + a, angle);
-          b = rotateY(target + b, angle);
-          c = rotateY(target + c, angle);*/
 
-          float3 triNormal = getNormal(tri);
+          /*a = rotateY(a, getLogCustom(length(a)) * scale + tt);
+          b = rotateY(b, getLogCustom(length(b)) * scale + tt);
+          c = rotateY(c, getLogCustom(length(c)) * scale + tt);*/
+          /*a = rotateY(a, getLogCustom2(abs(a.y)*1000.0) + _Time * 10.0);
+          b = rotateY(b, getLogCustom2(abs(b.y)*1000.0) + _Time * 10.0);
+          c = rotateY(c, getLogCustom2(abs(c.y)*1000.0) + _Time * 10.0);*/
+
+          /*float3 triNormal = getTriangleNormal(a, b, c);*/
           /*float3 triNormal = cross(normalize(c - a), normalize(b - a));*/
           /*float3 triNormal = normalize(rotateY(tri[0].normal, angle));*/
-
-          float4x4 vp = mul(UNITY_MATRIX_MVP, _World2Object);
 
           FS_INPUT pIn = (FS_INPUT)0;
           pIn.pos = mul(vp, float4(a, 1.0));
           pIn.uv = tri[0].uv;
-          pIn.normal = triNormal;
-          pIn.color = half4(1.0,0.0,0.0,1.0);
+          pIn.normal = tri[0].normal;
+          pIn.color = color;
           triStream.Append(pIn);
 
           pIn.pos =  mul(vp, float4(b, 1.0));
           pIn.uv = tri[1].uv;
-          pIn.normal = triNormal;
-          pIn.color = half4(0.0,1.0,0.0,0.0);
+          pIn.normal = tri[1].normal;
+          pIn.color = color;
           triStream.Append(pIn);
 
           pIn.pos =  mul(vp, float4(c, 1.0));
           pIn.uv = tri[2].uv;
-          pIn.normal = triNormal;
-          pIn.color = half4(0.0,0.0,1.0,1.0);
+          pIn.normal = tri[2].normal;
+          pIn.color = color;
           triStream.Append(pIn);
         }
 
@@ -164,6 +209,8 @@ Shader "Distortion/Tornado2" {
         {
           half4 color = _Color;
           color.rgb = i.normal * 0.5 + 0.5;
+          color.rgb *= Luminance(i.color);
+
           color.a = 1.0;
           return color;
         }
