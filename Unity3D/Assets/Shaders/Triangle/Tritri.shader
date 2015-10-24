@@ -80,12 +80,12 @@ Shader "Triangle/Tritri" {
         GS_INPUT vert (appdata_full v)
         {
           GS_INPUT o = (GS_INPUT)0;
-          float3 p = mul(_Object2World, v.vertex).xyz;
+          /*float3 p = mul(_Object2World, v.vertex).xyz;
           float t = cos(_Time * 10.0) * 0.5 + 0.5;
           float3 target = _WorldSpaceCameraPos;
           float dist = length(p - target);
           float scale = (100.0) / (dist);
-          float angle = scale;
+          float angle = scale;*/
 
           /*color.rgb = clamp(1.0 - scale, 0.0, 1.0);*/
 
@@ -93,7 +93,7 @@ Shader "Triangle/Tritri" {
           b.y += dist;
           c.y += dist;*/
 
-          v.vertex.xyz = v.vertex.xyz + rotateY(p - target, angle);
+          /*v.vertex.xyz = v.vertex.xyz + rotateY(p - target, angle);*/
           o.pos =  mul(_Object2World, v.vertex);
           o.normal = v.normal;
           o.uv = TRANSFORM_TEX (v.texcoord, _MainTex);
@@ -135,9 +135,9 @@ Shader "Triangle/Tritri" {
           b.y += dist;
           c.y += dist;*/
 
-          /*a = tri[0].pos + rotateY(a - target, angle);
+          a = tri[0].pos + rotateY(a - target, angle);
           b = tri[1].pos + rotateY(b - target, angle);
-          c = tri[2].pos + rotateY(c - target, angle);*/
+          c = tri[2].pos + rotateY(c - target, angle);
           /*a = rotateY(a, angle + tt);
           b = rotateY(b, angle + tt);
           c = rotateY(c, angle + tt);*/

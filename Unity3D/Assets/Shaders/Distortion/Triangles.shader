@@ -1,4 +1,4 @@
-Shader "Distortion/VortexTriangle" {
+Shader "Triangle/TriOrder" {
   Properties {
     _Color ("Color", Color) = (1,1,1,1)
     _MainTex ("Texture (RGB)", 2D) = "white" {}
