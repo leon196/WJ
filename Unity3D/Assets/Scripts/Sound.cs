@@ -7,7 +7,7 @@ namespace WJ
 	{
 		AudioClip audioClip;
 		AudioSource audioSource;
-    	float[] samples;  
+    	float[] samples;
     	Texture2D samplesTexture;
     	float samplesTotal;
     	float samplesElapsed;
@@ -25,35 +25,21 @@ namespace WJ
 			samplesTotal = 0f;
 			UnityEngine.Shader.SetGlobalTexture("_SamplerSound", samplesTexture);
 			audioSource = gameObject.AddComponent<AudioSource>();
-		// }
+			
+			audioClip = Microphone.Start(Microphone.devices[0], true, 5, 24000);
+			audioSource.clip = Microphone.Start(Microphone.devices[0], true, 5, 24000);
 
-		// public void LoadAudioClip ()
-		// {		
-			var url = "file://" + Application.dataPath + "/StreamingAssets/music.ogg";
-			var www = new WWW(url);
-			audioClip = www.audioClip;
-			// audioSource = gameObject.AddComponent<AudioSource>();
-			audioSource.clip = audioClip;
+			    // audioObj[index].clip = ;
 
-	        // if (Microphone.devices.Length > 0)
-	        // {
-	        // 	audioSource.clip = Microphone.Start(Microphone.devices[0], true, 10, 44100);
-	        // }
 
 		}
 
-		public void SetAudioClip (AudioClip clip)
-		{		
-			audioClip = clip;
-			audioSource.clip = clip;
-		}
-
-	    public void UpdateSamples ()  
+	    public void UpdateSamples ()
 	    {
 	        if (audioClip.loadState == AudioDataLoadState.Loaded && !audioSource.isPlaying)
-	        {      
+	        {
 	            audioSource.Play();
-	        }          
+	        }
 
 	        audioSource.GetSpectrumData(samples, 0, FFTWindow.BlackmanHarris);
 

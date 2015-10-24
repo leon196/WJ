@@ -12,7 +12,7 @@ namespace WJ
 		Video video;
 		Sound sound;
 
-		void Start () 
+		void Start ()
 		{
 			shader = GetComponent<Shader>();
 			renderTexture = GetComponentInChildren<RenderTexture>();
@@ -38,10 +38,10 @@ namespace WJ
 
 
 	        if (video.movieTexture.isReadyToPlay && !video.movieTexture.isPlaying)
-	        {      
+	        {
 	            video.movieTexture.Play();
 				// sound.SetAudioClip(video.movieTexture.audioClip);
-	        }          
+	        }
 
 	        if (video.movieTexture.isPlaying)
 	        {
@@ -89,7 +89,7 @@ namespace WJ
 			{
 				Resize(4f);
 			}
-			else 
+			else
 			{
 				Resize(1f);
 			}
